@@ -25,7 +25,7 @@ other.
 Bridge networks apply to containers running on the same Docker daemon host.
 For communication among containers running on different Docker daemon hosts, you
 can either manage routing at the OS level, or you can use an
-[overlay network](overlay.md).
+[overlay network](../overlay/overlay.md).
 
 When you start Docker, a [default bridge network](#use-the-default-bridge-network) (also
 called `bridge`) is created automatically, and newly-started containers connect
@@ -38,7 +38,7 @@ network.**
 - **User-defined bridges provide automatic DNS resolution between containers**.
 
   Containers on the default bridge network can only access each other by IP
-  addresses, unless you use the [`--link` option](../links.md), which is
+  addresses, unless you use the [`--link` option](../../links.md), which is
   considered legacy. On a user-defined bridge network, containers can resolve
   each other by name or alias.
 
@@ -81,7 +81,7 @@ network.**
 - **Linked containers on the default bridge network share environment variables**.
 
   Originally, the only way to share environment variables between two containers
-  was to link them using the [`--link` flag](../links.md). This type of
+  was to link them using the [`--link` flag](../../links.md). This type of
   variable sharing isn't possible with user-defined networks. However, there
   are superior ways to share environment variables. A few ideas:
 
@@ -92,8 +92,8 @@ network.**
     compose file can define the shared variables.
 
   - You can use swarm services instead of standalone containers, and take
-    advantage of shared [secrets](../../engine/swarm/secrets.md) and
-    [configs](../../engine/swarm/configs.md).
+    advantage of shared [secrets](../../../engine/swarm/secrets.md) and
+    [configs](../../../engine/swarm/configs.md).
 
 Containers connected to the same user-defined bridge network effectively expose all ports
 to each other. For a port to be accessible to containers or non-Docker hosts on
@@ -144,7 +144,7 @@ $ docker network create my-net
 
 You can specify the subnet, the IP address range, the gateway, and other
 options. See the
-[docker network create](../../engine/reference/commandline/network_create.md#specify-advanced-options)
+[docker network create](../../../engine/reference/commandline/network_create.md#specify-advanced-options)
 reference or the output of `docker network create --help` for details.
 
 Use the `docker network rm` command to remove a user-defined bridge
@@ -201,7 +201,7 @@ $ docker network disconnect my-net my-nginx
 ## Use IPv6
 
 If you need IPv6 support for Docker containers, you need to
-[enable the option](../../config/daemon/ipv6.md) on the Docker daemon and reload its
+[enable the option](../../../config/daemon/ipv6.md) on the Docker daemon and reload its
 configuration, before creating any IPv6 networks or assigning containers IPv6
 addresses.
 
@@ -220,7 +220,7 @@ If you do not specify a network using the `--network` flag, and you do specify a
 network driver, your container is connected to the default `bridge` network by
 default. Containers connected to the default `bridge` network can communicate,
 but only by IP address, unless they're linked using the
-[legacy `--link` flag](../links.md).
+[legacy `--link` flag](../../links.md).
 
 ### Configure the default bridge network
 
@@ -259,7 +259,7 @@ For more information about this limitation, see
 
 ## Next steps
 
-- Go through the [standalone networking tutorial](../network-tutorial-standalone.md)
+- Go through the [standalone networking tutorial](../../network-tutorial-standalone.md)
 - Learn about [networking from the container's point of view](../index.md)
-- Learn about [overlay networks](overlay.md)
-- Learn about [Macvlan networks](macvlan.md)
+- Learn about [overlay networks](../overlay/overlay.md)
+- Learn about [Macvlan networks](../macvlan/macvlan.md)
