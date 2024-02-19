@@ -17,7 +17,7 @@
         * `docker exec -it container2 sh` & `ping 172.21.0.2`
     * Via containerName
       * Connect into container2 and reach container1
-        * `docker exec -it container2 sh` & `ping container2`
+        * `docker exec -it container2 sh` & `ping container1`
   * non-Docker workloads
     * TODO:
 
