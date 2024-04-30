@@ -1,5 +1,5 @@
 # Prerequisites
-* [Install docker]()
+* [Install docker](https://docs.docker.com/get-docker/)
 * `docker network create -d bridge my-net`
   * Create a network
 * `docker run -itd --name=container busybox`
