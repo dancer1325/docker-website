@@ -66,3 +66,23 @@
   * `docker buildx build -t getstartedbuildx github.com/dancer1325/docker-getting-started-app`
 * `docker builder build [OPTIONS] PATH | URL | -`
   * `docker builder build -t getstartedbuilder github.com/dancer1325/docker-getting-started-app`
+* `docker build [OPTIONS] PATH | URL | -`
+
+
+# Examples
+# TODO:
+# Build with `-`
+* `docker build - < Dockerfile`
+  * Create a docker image
+    * without passing context -- `-` --
+    * passing as input Dockerfile -- `< Dockerfile` --
+  * `docker image list` to check that a <none> image has built
+* Dockerfile `ADD` only works if it refers to a remote URL
+  * create '/target' & add the Dockerfile
+  * `tar -czf context.tar.gz target`
+  * `docker build - < context.tar.gz`
+# TODO:
+## `-f DockerFileName` OR `--file DockerFileName`
+*  
+
+# TODO:
