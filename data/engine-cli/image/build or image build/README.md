@@ -3,6 +3,7 @@
 
 # Syntax
 * `docker image build [OPTIONS] PATH | URL | -`
+  * Note: 👁️`|`  == OR 👁️
   * Check https://github.com/dancer1325/docker-getting-started-app
 
 # Dockerfile + context -> build an image
@@ -14,9 +15,11 @@
 * can refer to
 #### GIT repositories
 * & its submodules — are recursively fetched by the — system
-* if `URL` contains a fragment which recursively clones the repository + submodules → use `git clone --recursive`
-  * Problems
-    * Problem1: `--recursive`? https://github.com/docker/docs/issues/19502
+  * way
+    * 🧠Docker pulls the repository — into a → localhost’s temporary directory — sends as →  context to the @Daemon CLI (dockerd) 🧠 
+  * if `URL` contains a fragment which recursively clones the repository + submodules → use `git clone --recursive`
+    * Problems
+      * Problem1: `--recursive`? https://github.com/docker/docs/issues/19502
 * commit history NOT preserved
   * `docker history getting-started` which does NOT show git history of the repo
 * local COPY of user credentials or VPNs — gives you the ability to access to — private repositories
@@ -48,6 +51,9 @@
 
 ### PATH
 * TODO:
+
+## build process — can refer to — any of the files in the context
+* Check '../reference/Dockerfile', `COPY`
 
 # ===
 * `docker image build [OPTIONS] PATH | URL | -`
