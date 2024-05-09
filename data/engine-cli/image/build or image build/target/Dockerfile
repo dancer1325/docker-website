@@ -5,6 +5,7 @@ FROM python:3.8-slim
 WORKDIR /app
 
 # Add the Python script from a remote URL
+# TODO: fix
 ADD https://example.com/app.py /app/app.py
 
 # Define the command to run when the container starts
