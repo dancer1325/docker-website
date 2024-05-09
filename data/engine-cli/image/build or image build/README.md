@@ -83,6 +83,8 @@
   * `docker build - < context.tar.gz`
 # TODO:
 ## `-f DockerFileName` OR `--file DockerFileName`
-*  
+* allows
+  * specifying the location of the Dockerfile
+* `docker build -f target/Dockerfile .` 
 
 # TODO:
