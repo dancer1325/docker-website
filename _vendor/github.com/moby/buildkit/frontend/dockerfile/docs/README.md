@@ -19,6 +19,7 @@
 * if you do NOT scape `“`  → removed
 * wrapping under `“` & `\` → include spaces
 * if Multi-stage builds & set `ENV` for ancestors → environment variables are inherited -- TODO: Check --
+* TODO:
 ## How to test all?
 * `docker build -t env .`
 * `docker run env`
