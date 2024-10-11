@@ -20,7 +20,7 @@ aliases:
 ```markdown
 Usage: dockerd [OPTIONS]
 
-A self-sufficient runtime for containers.
+== runtime for containers / self-sufficient
 
 Options:
       --add-runtime runtime                   Register an additional OCI compatible runtime (default [])
@@ -175,29 +175,35 @@ to set these environment variables on a host using `systemd`.
 
 ### Daemon socket option
 
-The Docker daemon can listen for [Docker Engine API](https://docs.docker.com/engine/api/)
-requests via three different types of Socket: `unix`, `tcp`, and `fd`.
+* Docker daemon -- can listen for -- [Docker Engine API](https://docs.docker.com/engine/api/)
+requests / -- via 3 different types of Socket
+  * `unix`
+    * default one
+    * == `unix` domain socket (or IPC socket)
+    * created | `/var/run/docker.sock`
+    * requirements
+      * `root` permission
+      * `docker` group membership
+  * `tcp`
+    * allows
+      * accessing remotely the -- Docker daemon 
+    * -> it's provided a direct, un-encrypted & un-authenticated access to the Docker daemon
+      * -> recommended to secure the daemon -- via --
+        * [built in HTTPS encrypted socket](https://docs.docker.com/engine/security/protect-access/)
+        * putting a secure web proxy | front of it 
+    * ports to listen it
+      * for un-encrypted
+        * `-H tcp://0.0.0.0:2375`
+          * == ALL network interfaces | port `2375`
+        * `-H tcp://192.168.59.103:2375`
+          * == particular network interface (-- via -- IP address) | port `2375`
+      * for encrypted communication
+        * | port `2376`
+        * protocols supported
+          * TLS v1.0+
+  * `fd`
 
-By default, a `unix` domain socket (or IPC socket) is created at
-`/var/run/docker.sock`, requiring either `root` permission, or `docker` group
-membership.
-
-If you need to access the Docker daemon remotely, you need to enable the tcp
-Socket. When using a TCP socket, the Docker daemon provides un-encrypted and
-un-authenticated direct access to the Docker daemon by default. You should secure
-the daemon either using the [built in HTTPS encrypted socket](https://docs.docker.com/engine/security/protect-access/),
-or by putting a secure web proxy in front of it. You can listen on port `2375` on all
-network interfaces with `-H tcp://0.0.0.0:2375`, or on a particular network
-interface using its IP address: `-H tcp://192.168.59.103:2375`. It is
-conventional to use port `2375` for un-encrypted, and port `2376` for encrypted
-communication with the daemon.
-
-> **Note**
->
-> If you're using an HTTPS encrypted socket, keep in mind that only
-> TLS version 1.0 and higher is supported. Protocols SSLv3 and below are not
-> supported for security reasons.
-
+* TODO:
 On systemd based systems, you can communicate with the daemon via
 [systemd socket activation](https://0pointer.de/blog/projects/socket-activation.html),
 with `dockerd -H fd://`. Using `fd://` works for most setups, but
