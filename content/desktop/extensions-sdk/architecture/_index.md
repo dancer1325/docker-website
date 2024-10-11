@@ -4,10 +4,13 @@ description: Docker extension architecture
 keywords: Docker, extensions, sdk, metadata
 ---
 
-Extensions are applications that run inside the Docker Desktop. They're packaged as Docker images, distributed
-through Docker Hub, and installed by users either through the Marketplace within Docker Dashboard or the
-Docker Extensions CLI.
-
+* Extensions
+  * == applications / run | Docker Desktop
+  * -- packaged as -- Docker images / -- distributed through -- Docker Hub
+  * ways to be installed it
+    * Docker Dashboard's Marketplace 
+    * Docker Extensions CLI
+* TODO:
 Extensions can be composed of three (optional) components:
 - A frontend (or User Interface): A web application displayed in a tab of the dashboard in Docker Desktop
 - A backend: One or many containerised services running in the Docker Desktop VM
