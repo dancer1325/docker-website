@@ -21,6 +21,7 @@ aliases:
         * directory structure
         * OS of the host machine
       * 👁️volumes are completely managed by Docker👁️ 
+        * ⚠️== outside the scope of ANY container ⚠️
     * advantages of volumes
       * easier to back up or migrate
       * ways to manage 
@@ -131,44 +132,28 @@ Volumes used with services, only support `--mount`.
 
 ## Create and manage volumes
 
-Unlike a bind mount, you can create and manage volumes outside the scope of any
-container.
+* 
+    ```console
+    $ docker volume create my-vol
+    # proof that it's out of the scope of a container
+    ```
+    * create a volume    
+* 
+    ```console
+    $ docker volume ls
+    ```
+    * list the volumes
 
-Create a volume:
-
-```console
-$ docker volume create my-vol
-```
-
-List volumes:
-
-```console
-$ docker volume ls
-
-local               my-vol
-```
-
-Inspect a volume:
-
-```console
-$ docker volume inspect my-vol
-[
-    {
-        "Driver": "local",
-        "Labels": {},
-        "Mountpoint": "/var/lib/docker/volumes/my-vol/_data",
-        "Name": "my-vol",
-        "Options": {},
-        "Scope": "local"
-    }
-]
-```
-
-Remove a volume:
-
-```console
-$ docker volume rm my-vol
-```
+*
+    ```console
+    $ docker volume inspect my-vol
+    ```
+    * inspect a volume 
+*
+    ```console
+    $ docker volume rm my-vol
+    ```
+    * remove a volume
 
 ## Start a container with a volume
 

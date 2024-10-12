@@ -2,9 +2,6 @@
 * [Install docker](https://docs.docker.com/get-docker/)
 
 
-# Create and manage volumes
-* TODO:
-
 # Start a container with a volume
 * if the volume defined for the container does NOT exist -> Docker create the volumes for you
 * Via
