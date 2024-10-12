@@ -1,22 +1,6 @@
 # Prerequisites
 * [Install docker](https://docs.docker.com/get-docker/)
 
-# Concepts
-* TODO:
-
-# `-v` / `--v` vs `--mount`
-## `-v` / `--v`
-* +`NameOfVolumes:ContainerPathToMountTheVolume:Option1,Option2,..`
-  * NameOfVolumes
-    * unique / host machine
-    * if you use anonymous volumes -> it's omitted
-  * Option1,Option2,..
-    * optional
-## `--mount`
-* More explicit & verbose
-* Uses
-  * specify volume driver options
-* TODO:
 
 # Create and manage volumes
 * TODO:
