@@ -157,102 +157,63 @@ Volumes used with services, only support `--mount`.
 
 ## Start a container with a volume
 
-If you start a container with a volume that doesn't yet exist, Docker creates
-the volume for you. The following example mounts the volume `myvol2` into
-`/app/` in the container.
-
-The `-v` and `--mount` examples below produce the same result. You can't run
-them both unless you remove the `devtest` container and the `myvol2` volume
-after running the first one.
-
-{{< tabs >}}
-{{< tab name="`--mount`" >}}
-
-```console
-$ docker run -d \
-  --name devtest \
-  --mount source=myvol2,target=/app \
-  nginx:latest
-```
-
-{{< /tab >}}
-{{< tab name="`-v`" >}}
-
-```console
-$ docker run -d \
-  --name devtest \
-  -v myvol2:/app \
-  nginx:latest
-```
-
-{{< /tab >}}
-{{< /tabs >}}
-
-Use `docker inspect devtest` to verify that Docker created the volume and it mounted
-correctly. Look for the `Mounts` section:
-
-```json
-"Mounts": [
-    {
-        "Type": "volume",
-        "Name": "myvol2",
-        "Source": "/var/lib/docker/volumes/myvol2/_data",
-        "Destination": "/app",
-        "Driver": "local",
-        "Mode": "",
-        "RW": true,
-        "Propagation": ""
-    }
-],
-```
-
-This shows that the mount is a volume, it shows the correct source and
-destination, and that the mount is read-write.
-
-Stop the container and remove the volume. Note volume removal is a separate
-step.
-
-```console
-$ docker container stop devtest
-
-$ docker container rm devtest
-
-$ docker volume rm myvol2
-```
+* if the volume defined for the container does NOT exist -> Docker create the volumes for you
+* Via
+  * `-v` / `--v`
+    * 
+        ```
+        docker run -d --name devtest -v myvol2:/app nginx:latest
+        # myvol2    name of the volume
+        # /app      container path to mount the volume
+        ``` 
+      * `docker inspect devtest | jq '.[0].Mounts'`
+        * check the volume mounted
+      * `docker exec -it podId sh` & `ls` checking that '/app' directory exist
+  * `--mount`
+    * 
+      ```
+      docker run -d --name devtest --mount source=myvol2,target=/app nginx:latest
+      ```
+      * SAME as previous one
+* clean ALL afterward
+  ```
+  $ docker container stop devtest
+  $ docker container rm devtest
+  $ docker volume rm myvol2
+  ```
 
 ## Use a volume with Docker Compose
 
-The example below shows a single Docker Compose service with a volume:
+* options
+  * create the volume -- via -- Docker compose
 
-```yaml
-services:
-  frontend:
-    image: node:lts
+    ```yaml
+    services:
+      frontend:
+        image: node:lts
+        volumes:
+          - myapp:/home/node/app
     volumes:
-      - myapp:/home/node/app
-volumes:
-  myapp:
-```
+      myapp:
+    ```
 
-Running `docker compose up` for the first time creates a volume. Docker reuses the same volume when you run the command subsequently.
+    * `docker compose up`
+      * first time / you run it -> creates a volume
+      * if you run subsequently -> Docker reuses the volume
+  * 👁️create the volume directly OUTSIDE of Compose (`docker volume create`) & reference it inside `compose.yaml` afterward 👁️	
 
-You can create a volume directly outside of Compose using `docker volume create` and
-then reference it inside `compose.yaml` as follows:
-
-```yaml
-services:
-  frontend:
-    image: node:lts
+    ```yaml
+    services:
+      frontend:
+        image: node:lts
+        volumes:
+          - myapp:/home/node/app
     volumes:
-      - myapp:/home/node/app
-volumes:
-  myapp:
-    external: true
-```
+      myapp:
+        external: true
+    ```
 
-For more information about using volumes with Compose, refer to the
-[Volumes](../compose/compose-file/07-volumes.md)
-section in the Compose specification.
+* check [Volumes](../compose/compose-file/07-volumes.md)
 
 ### Start a service with volumes
 
