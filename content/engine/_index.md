@@ -47,24 +47,24 @@ aliases:
 - /linux/
 ---
 
-Docker Engine is an open source containerization technology for building and
-containerizing your applications. Docker Engine acts as a client-server
-application with:
-
-- A server with a long-running daemon process
-  [`dockerd`](/engine/reference/commandline/dockerd).
-- APIs which specify interfaces that programs can use to talk to and instruct
-  the Docker daemon.
-- A command line interface (CLI) client
-  [`docker`](/engine/reference/commandline/cli/).
-
-The CLI uses [Docker APIs](api/index.md) to control or interact with the Docker
-daemon through scripting or direct CLI commands. Many other Docker applications
-use the underlying API and CLI. The daemon creates and manages Docker objects,
-such as images, containers, networks, and volumes.
-
-For more details, see
-[Docker Architecture](../get-started/overview.md#docker-architecture).
+* Docker Engine
+  * 👀== open source containerization technology / 👀
+    * allows, for you applications,
+      * building
+      * containerizing
+  * ⭐️== client-server application ⭐️/
+    * server / contains
+      * [`dockerd`](/engine/reference/commandline/dockerd)
+        * == long-running daemon process / manage Docker objects (images, volumes, networks, containers)
+    * APIs /
+      * uses
+        * programs can talk to
+        * instruct the Docker daemon
+          * _Example:_ by the CLI client
+      * see [Docker APIs](api/index.md)
+    * CLI client
+      * see [`docker`](/engine/reference/commandline/cli/)
+  * see [Docker Architecture](../get-started/overview.md#docker-architecture).
 
 {{< grid >}}
 
