@@ -50,15 +50,19 @@ After updating the `settings.json` file, close and restart Docker Desktop to app
 
 ## Topics for Linux and Mac
 
-### Volume mounting requires file sharing for any project directories outside of `$HOME`
+### Volume mounting -- requires -- file sharing / ANY project directories outside of `$HOME`
 
-If you are using mounted volumes and get runtime errors indicating an
-application file is not found, access to a volume mount is denied, or a service
-cannot start, such as when using [Docker Compose](../../compose/gettingstarted.md),
-you might need to turn on [file sharing](../settings/linux.md#file-sharing).
-
-Volume mounting requires shared drives for projects that live outside of the
-`/home/<user>` directory. From **Settings**, select **Resources** and then **File sharing**. Share the drive that contains the Dockerfile and volume.
+* turn on [file sharing](../settings/linux.md#file-sharing)
+  * use cases
+    * mounted volumes & get runtime errors / 
+      * application file is NOT found, or
+      * access to a volume mount is denied, or
+      * service can NOT start (_Example:_ using [Docker Compose](../../compose/gettingstarted.md))
+  * how to configure?
+    * **Settings**, select **Resources** & **File sharing**
+      * == share the drive / contains the
+        * Dockerfile 
+        * volume
 
 ### Docker Desktop fails to start on MacOS or Linux platforms
 
