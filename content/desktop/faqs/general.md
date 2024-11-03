@@ -31,24 +31,25 @@ This includes:
 
 ### How do I connect to the remote Docker Engine API?
 
-To connect to the remote Engine API, you might need to provide the location of the Engine API for Docker clients and development tools.
+* goal
+  * connect -- to the -- remote Docker Engine API
+* provide the location of the Docker Engine API
+  * -- for -- 
+    * Docker clients
+    * development tools
+  * ways
+    * | Mac & Windows WSL 2
+      * -- via an -- Unix socket `unix:///var/run/docker.sock`
+      * if you are working with applications / expect settings for `DOCKER_HOST` & `DOCKER_CERT_PATH` -> specify 
 
-Mac and Windows WSL 2 users can connect to the Docker Engine through a Unix socket: `unix:///var/run/docker.sock`.
-
-If you are working with applications like [Apache Maven](https://maven.apache.org/)
-that expect settings for `DOCKER_HOST` and `DOCKER_CERT_PATH` environment
-variables, specify these to connect to Docker instances through Unix sockets.
-
-For example:
-
-```console
-$ export DOCKER_HOST=unix:///var/run/docker.sock
-```
-
-Docker Desktop Windows users can connect to the Docker Engine through a **named pipe**: `npipe:////./pipe/docker_engine`, or **TCP socket** at this URL:
-`tcp://localhost:2375`.
-
-For details, see [Docker Engine API](../../engine/api/index.md).
+        ```console
+        $ export DOCKER_HOST=unix:///var/run/docker.sock
+        ```
+    * | Docker Desktop Windows
+      * -- via -- 
+        * **named pipe**: `npipe:////./pipe/docker_engine`, or
+        * **TCP socket** `tcp://localhost:2375`
+  * see [Docker Engine API](../../engine/api/index.md)
 
 ### How do I connect from a container to a service on the host?
 
