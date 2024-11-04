@@ -74,8 +74,12 @@ aliases:
 - /engine/reference/commandline/app_version/
 ---
 
-This section includes the reference documentation for the Docker platform's
-various APIs, CLIs, drivers and specifications, and file formats.
+* goal
+  * Docker platform's
+    * various APIs,
+    * CLIs,
+    * drivers and specifications,
+    * file formats.
 
 ## File formats
 
