@@ -57,23 +57,29 @@ admin:
   link: /subscription/
 ---
 
-This section contains user guides on how to install, set up, configure, and use
-Docker products.
+* goal
+  * how to 
+    * install,
+    * set up,
+    * configure,
+    * use Docker products
 
 ## Developer tools
 
-Software development and containerization technologies.
+* == Software development & containerization technologies
 
 {{< grid items=development >}}
 
 ## Services
 
-Artifact management and supply chain security.
+* == Artifact management + supply chain security
 
 {{< grid items=services >}}
 
 ## Administration and accounts
 
-Administration and subscription management for organizations.
+* for organizations
+  * Administration
+  * subscription management 
 
 {{< grid items=admin >}}
