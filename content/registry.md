@@ -39,40 +39,40 @@ aliases:
   - /registry/storage-drivers/swift/
 ---
 
-Registry, the open source implementation for storing and distributing container
-images and other content, has been donated to the CNCF. Registry now goes under
-the name of Distribution, and the documentation has moved to
-[distribution/distribution].
+* Registry
+  * == open source implementation /
+    * allows,
+      * about container images & other content
+        * storing
+        * distributing container
+    * 👀-- was donated to the -- CNCF 👀
+      * see [distribution/distribution] 
 
-The Docker Hub registry implementation is based on Distribution. Docker Hub
-implements version 1.0.1 OCI distribution [specification]. For reference
-documentation on the API protocol that Docker Hub implements, refer to the OCI
-distribution specification.
+* Docker Hub registry implementation
+  * 👀-- based on -- Distribution 👀 /
+    * -- implements -- v1.0.1 OCI distribution [specification]
 
 ## Supported media types
 
-Docker Hub supports the following image manifest formats for pulling images:
-
-- [OCI image manifest]
-- [Docker image manifest version 2, schema 2]
-- Docker image manifest version 2, schema 1
-- Docker image manifest version 1
-
-You can push images with the following formats:
-
-- [OCI image manifest]
-- [Docker image manifest version 2, schema 2]
-
-Docker Hub also supports OCI artifacts. See [OCI artifacts].
+* supported image manifests -- by -- Docker Hub
+  * for pulling images
+    - [OCI image manifest]
+    - [Docker image manifest v2, schema 2]
+    - Docker image manifest v2, schema 1
+    - Docker image manifest v1
+  * for pushing images
+    - [OCI image manifest]
+    - [Docker image manifest version 2, schema 2]
+* supported OCI artifacts -- by -- Docker Hub
+  * see [OCI artifacts]
 
 ## Authentication
 
-For documentation related to authentication to the Docker Hub registry, see:
-
-- [Token authentication specification][token]
-- [OAuth 2.0 token authentication][oauth2]
-- [JWT authentication][jwt]
-- [Token scope and access][scope]
+* Docker Hub registry authentication
+  - [Token authentication specification][token]
+  - [OAuth 2.0 token authentication][oauth2]
+  - [JWT authentication][jwt]
+  - [Token scope and access][scope]
 
 <!-- links -->
 
