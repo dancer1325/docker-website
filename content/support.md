@@ -10,9 +10,8 @@ Find information on how to get support, and the scope of Docker support.
 
 ## How do I get support?
 
-If you have a paid Docker subscription, raise a ticket through [Docker support](https://hub.docker.com/support/contact/).
-
-All Docker users can seek support through the following resources, where Docker or the community respond on a best effort basis.
+* if you have a paid Docker subscription -> raise a ticket -- through [Docker support](https://hub.docker.com/support/contact/)
+* check
    - [Docker Desktop for Windows GitHub repo](https://github.com/docker/for-win) 
    - [Docker Desktop for Mac GitHub repo](https://github.com/docker/for-mac)
    - [Docker Desktop for Linux GitHub repo](https://github.com/docker/desktop-linux)
@@ -20,10 +19,8 @@ All Docker users can seek support through the following resources, where Docker 
    - [Docker Community Slack](http://dockr.ly/comm-slack)
 
 
-## What support can I get?
-
-If you have a paid Docker subscription, you can get support for the following types of issues:
-
+## What support can I get / I have a paid Docker subscription?
+* TODO:
    * Account management related issues
    * Automated builds
    * Basic product 'how to' questions
