@@ -36,22 +36,6 @@ aliases:
 
 ## Quick hands-on guides
 
-Let these 5-minute hands-on guides show you around Docker Desktop and introduce you to containerization concepts.
-
-{{< grid cols=2 >}}
-
-> **Note**
->
-> These hands-on guides are also available as interactive walkthroughs inside
-> Docker Desktop's learning center.
-
-## Getting started guide
-
-Dive deeper into Docker and containerization concepts in this end-to-end guide.
-
-{{< card
-  title="Getting started guide"
-  link=/get-started/
-  description="A 45-minute guide where you start by containerizing a simple application and then follow along to develop it into a multi-container application."
-  icon="/assets/images/rocket.svg"
->}}
+* goal
+  * getting started Docker Desktop
+  * containerization concepts
