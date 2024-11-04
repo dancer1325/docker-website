@@ -45,45 +45,51 @@ aliases:
 - /docker-for-windows/opensource/
 ---
 
-Docker Desktop is a one-click-install application for your Mac, Linux, or Windows environment
-that lets you build, share, and run containerized applications and microservices. 
+* Docker Desktop 
+  * := application /
+    * available cross platform (Mac, Linux, or Windows)
+    * allows
+      * about containerized applications and microservices
+        * build,
+        * share,
+        * run
+      * taking care of
+        * port mappings,
+        * file system concerns,
+        * other default settings
+        * updating bugs fixes
+    * provides
+      * GUI -- to -- manage your
+        * containers,
+        * applications,
+        * images
 
-It provides a straightforward GUI (Graphical User Interface) that lets you manage your containers, applications, and images directly from your machine. You can use Docker Desktop either on its own or as a complementary tool to the CLI. 
+  * includes
+    - [Docker Engine](../engine/index.md)
+    - Docker CLI client
+    - [Docker Scout](../scout/_index.md) (additional subscription may apply)
+    - [Docker Build](../build/index.md)
+    - [Docker Extensions](extensions/index.md)
+    - [Docker Compose](../compose/index.md)
+    - [Docker Content Trust](../engine/security/trust/index.md)
+    - [Kubernetes](https://github.com/kubernetes/kubernetes/)
+    - [Credential Helper](https://github.com/docker/docker-credential-helpers/)
 
-Docker Desktop reduces the time spent on complex setups so you can focus on writing code. It takes care of port mappings, file system concerns, and other default settings, and is regularly updated with bug fixes and security updates.
-
-
-{{< tabs >}}
-{{< tab name="What's included in Docker Desktop?" >}}
-
-- [Docker Engine](../engine/index.md)
-- Docker CLI client
-- [Docker Scout](../scout/_index.md) (additional subscription may apply)
-- [Docker Build](../build/index.md)
-- [Docker Extensions](extensions/index.md)
-- [Docker Compose](../compose/index.md)
-- [Docker Content Trust](../engine/security/trust/index.md)
-- [Kubernetes](https://github.com/kubernetes/kubernetes/)
-- [Credential Helper](https://github.com/docker/docker-credential-helpers/)
-
-{{< /tab >}}
-{{< tab name="What are the key features of Docker Desktop?">}}
-
-* Ability to containerize and share any application on any cloud platform, in multiple languages and frameworks.
-* Quick installation and setup of a complete Docker development environment.
-* Includes the latest version of Kubernetes.
-* On Windows, the ability to toggle between Linux and Windows containers to build applications.
-* Fast and reliable performance with native Windows Hyper-V virtualization.
-* Ability to work natively on Linux through WSL 2 on Windows machines.
-* Volume mounting for code and data, including file change notifications and easy access to running containers on the localhost network.
-
-{{< /tab >}}
-{{< /tabs >}}
-
-Docker Desktop works with your choice of development tools and languages and
-gives you access to a vast library of certified images and templates in
-[Docker Hub](https://hub.docker.com/). This allows development teams to extend
-their environment to rapidly auto-build, continuously integrate, and collaborate
-using a secure repository.
-
-{{< grid >}}
+  * key features
+    * Ability to 
+      * containerize and share any application | 
+        * ANY cloud platform
+        * MULTIPLE languages & frameworks
+      * | Windows machines, you -- can, via WSL 2 -- work natively | Linux
+    * Quick installation & setup of a complete Docker development environment.
+    * Includes the latest version of Kubernetes.
+    * | Windows, ability -- to toggle between -- Linux & Windows containers
+    * Fast and reliable performance
+      * Reason: 🧠 native Windows Hyper-V virtualization 🧠
+    * Volume mounting -- for -- code & data /
+      * file change notifications
+      * easy access to running containers | localhost network
+    * -- access to a -- vast library of certified images & templates | [Docker Hub](https://hub.docker.com/)
+    * work | ANY
+      * development tool
+      * languages
