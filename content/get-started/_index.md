@@ -78,6 +78,7 @@ aliases:
   * -- isolated from -- ALL other processes / running | that host machine
     * -> 👀 leverages [kernel namespaces & cgroups](https://medium.com/@saschagrunert/demystifying-containers-part-i-kernel-space-2c53d6979504) 👀
 * == runnable instance of an image
+  * == -- defined by -- image + configuration
   * run its own
     * software
     * binaries
@@ -87,8 +88,12 @@ aliases:
     * create,
     * start,
     * stop,
+      * -> any changes to its state / NOT stored | persistent storage -> disappear
+      * 👀!= delete 👀
     * move,
     * delete
+    * -- connect to -- >=1 networks
+    * attach storage | it
   * -- via --
     * Docker API
     * Docker CLI
