@@ -1,13 +1,13 @@
 # Dockerfile reference
 
-Docker can build images automatically by reading the instructions from a
-Dockerfile. A Dockerfile is a text document that contains all the commands a
-user could call on the command line to assemble an image. This page describes
-the commands you can use in a Dockerfile.
+* Dockerfile
+  * == text document / set of instructions  
+    * allows
+      * building images
 
 ## Overview
 
-The Dockerfile supports the following instructions:
+* supported instructions
 
 | Instruction                            | Description                                                 |
 | :------------------------------------- | :---------------------------------------------------------- |
@@ -18,7 +18,7 @@ The Dockerfile supports the following instructions:
 | [`ENTRYPOINT`](#entrypoint)            | Specify default executable.                                 |
 | [`ENV`](#env)                          | Set environment variables.                                  |
 | [`EXPOSE`](#expose)                    | Describe which ports your application is listening on.      |
-| [`FROM`](#from)                        | Create a new build stage from a base image.                 |
+| [`FROM`](#from)                        | 👀Create a new build stage from a base image. 👀                |
 | [`HEALTHCHECK`](#healthcheck)          | Check a container's health on startup.                      |
 | [`LABEL`](#label)                      | Add metadata to an image.                                   |
 | [`MAINTAINER`](#maintainer-deprecated) | Specify the author of an image.                             |
@@ -551,9 +551,8 @@ Or
 FROM [--platform=<platform>] <image>[@<digest>] [AS <name>]
 ```
 
-The `FROM` instruction initializes a new build stage and sets the
-[base image](https://docs.docker.com/glossary/#base-image) for subsequent
-instructions. As such, a valid Dockerfile must start with a `FROM` instruction.
+* 👀initializes a new build stage 👀
+* sets the [base image](https://docs.docker.com/glossary/#base-image) -- for -- subsequent instructions As such, a valid Dockerfile must start with a `FROM` instruction.
 The image can be any valid image.
 
 - `ARG` is the only instruction that may precede `FROM` in the Dockerfile.
@@ -1061,77 +1060,66 @@ port. For detailed information, see the
 
 ```dockerfile
 ENV <key>=<value> ...
+
+# alternative, omitting =, ONLY valid for passing 1 environment variable / time -- NOT recommended --
+ENV <key><value>
 ```
 
-The `ENV` instruction sets the environment variable `<key>` to the value
-`<value>`. This value will be in the environment for all subsequent instructions
-in the build stage and can be [replaced inline](#environment-replacement) in
-many as well. The value will be interpreted for other environment variables, so
-quote characters will be removed if they are not escaped. Like command line parsing,
-quotes and backslashes can be used to include spaces within values.
+* allows
+  * set environment variables / 👁️persist when the container runs 👁️
+* uses
+  * for ALL subsequent instructions | 
+    * build stage
+    * [Dockerfile](#environment-replacement)
+* if you do NOT scape `“`  → removed
+* wrapping under `“` & `\` → allows adding spaces
+* ways to set multiple `ENV` instructions
+  * several `ENV` instructions / 1 variable / instruction
 
-Example:
+    ```dockerfile
+    ENV MY_NAME="John Doe"
+    ENV MY_DOG=Rex\ The\ Dog
+    ENV MY_CAT=fluffy
+    ```
 
-```dockerfile
-ENV MY_NAME="John Doe"
-ENV MY_DOG=Rex\ The\ Dog
-ENV MY_CAT=fluffy
-```
+  * 1 `ENV` instruction / MULTIPLE `<key>=<value> ...` variables
 
-The `ENV` instruction allows for multiple `<key>=<value> ...` variables to be set
-at one time, and the example below will yield the same net results in the final
-image:
+    ```dockerfile
+    ENV MY_NAME="John Doe" MY_DOG=Rex\ The\ Dog \
+        MY_CAT=fluffy
+    ```
+* 👀ways to check the environment variables 👀
+  * `docker ps` & `docker exec -it ContainerId bash` & `printenv` OR
+    * requirements
+      * run a container
+  * `docker inspect env | jq '.[0].Config.Env'`
+    * requirements
+      * image built
+      * ⭐️NO needed to run a container ⭐️ 
+* way to override environment variables / specified | Dockerfile
+  * `docker run --env <key>=<value>`
+* if multi-stage builds / `ENV` | ancestors → environment variables are inherited
+  * see [multi-staged builds](https://docs.docker.com/build/building/multi-stage/)
 
-```dockerfile
-ENV MY_NAME="John Doe" MY_DOG=Rex\ The\ Dog \
-    MY_CAT=fluffy
-```
+* environment variable persistence -- can cause -- unexpected side effects
+  * _Example:_ `ENV DEBIAN_FRONTEND=noninteractive` changes the behavior of `apt-get`
+* recommendations
+  * if it's ONLY needed | build (== NOT | final image) -> 
+    * pass as single command
 
-The environment variables set using `ENV` will persist when a container is run
-from the resulting image. You can view the values using `docker inspect`, and
-change them using `docker run --env <key>=<value>`.
+      ```dockerfile
+      RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ...
+      ```
+    * use [`ARG`](#arg)
 
-A stage inherits any environment variables that were set using `ENV` by its
-parent stage or any ancestor. Refer [here](https://docs.docker.com/build/building/multi-stage/)
-for more on multi-staged builds.
+        ```dockerfile
+        ARG DEBIAN_FRONTEND=noninteractive
+        RUN apt-get update && apt-get install -y ...
+        ```
 
-Environment variable persistence can cause unexpected side effects. For example,
-setting `ENV DEBIAN_FRONTEND=noninteractive` changes the behavior of `apt-get`,
-and may confuse users of your image.
-
-If an environment variable is only needed during build, and not in the final
-image, consider setting a value for a single command instead:
-
-```dockerfile
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ...
-```
-
-Or using [`ARG`](#arg), which is not persisted in the final image:
-
-```dockerfile
-ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y ...
-```
-
-> **Alternative syntax**
->
-> The `ENV` instruction also allows an alternative syntax `ENV <key> <value>`,
-> omitting the `=`. For example:
->
-> ```dockerfile
-> ENV MY_VAR my-value
-> ```
->
-> This syntax does not allow for multiple environment-variables to be set in a
-> single `ENV` instruction, and can be confusing. For example, the following
-> sets a single environment variable (`ONE`) with value `"TWO= THREE=world"`:
->
-> ```dockerfile
-> ENV ONE TWO= THREE=world
-> ```
->
-> The alternative syntax is supported for backward compatibility, but discouraged
-> for the reasons outlined above, and may be removed in a future release.
+* requirements to test some of these sample instructions
+  * `docker build -f DockerfileENV -t env .`
+  * `docker run env`
 
 ## ADD
 
@@ -2026,59 +2014,32 @@ Therefore, to avoid unintended operations in unknown directories, it's best prac
 ## ARG
 
 ```dockerfile
+# []    == optional to indicate the default value
 ARG <name>[=<default value>]
+
+# MULTIPLE ARG can be specified
+ARG <nameOther>[=<default value>]
 ```
 
-The `ARG` instruction defines a variable that users can pass at build-time to
-the builder with the `docker build` command using the `--build-arg <varname>=<value>`
-flag.
+* allows
+  * defining a variable
+* uses 
+  * pass | build-time
+    * `docker build --build-arg <varname>=<value> ...`
+* recommendations
+  * ⚠️NOT use to pass secrets ⚠️
+    * **Reason:** 🧠are visible via `docker history`🧠
+    * _Example of secrets:_ user credentials, API tokens 
+    * if you want to pass secrets -> see [`RUN --mount=type=secret`](#run---mounttypesecret)
+* if you specify a build argument / NOT defined | Dockerfile -> build outputs a warning
 
-> **Warning**
->
-> It isn't recommended to use build arguments for passing secrets such as
-> user credentials, API tokens, etc. Build arguments are visible in the
-> `docker history` command and in `max` mode provenance attestations,
-> which are attached to the image by default if you use the Buildx GitHub Actions
-> and your GitHub repository is public.
->
-> Refer to the [`RUN --mount=type=secret`](#run---mounttypesecret) section to
-> learn about secure ways to use secrets when building images.
-{ .warning }
-
-
-If you specify a build argument that wasn't defined in the Dockerfile,
-the build outputs a warning.
-
-```console
-[Warning] One or more build-args [foo] were not consumed.
-```
-
-A Dockerfile may include one or more `ARG` instructions. For example,
-the following is a valid Dockerfile:
-
-```dockerfile
-FROM busybox
-ARG user1
-ARG buildno
-# ...
-```
-
-### Default values
-
-An `ARG` instruction can optionally include a default value:
-
-```dockerfile
-FROM busybox
-ARG user1=someuser
-ARG buildno=1
-# ...
-```
-
-If an `ARG` instruction has a default value and if there is no value passed
-at build-time, the builder uses the default.
+    ```console
+    [Warning] One or more build-args [foo] were not consumed.
+    ```
 
 ### Scope
 
+* TODO:
 An `ARG` variable definition comes into effect from the line on which it is
 defined in the Dockerfile not from the argument's use on the command-line or
 elsewhere. For example, consider this Dockerfile:
@@ -2339,6 +2300,13 @@ RUN echo $CONT_IMG_VER
 Line 3 doesn't cause a cache miss because the value of `CONT_IMG_VER` is a
 constant (`hello`). As a result, the environment variables and values used on
 the `RUN` (line 4) doesn't change between builds.
+
+* requirements to test some of these sample instructions
+  * `docker build -f DockerfileARG -t arg .` / `docker build --build-arg argument=argument2 -t arg .`
+  * `docker run arg`
+    * != environment variables -- `docker inspect arguments | jq '.[0].Config.Env'` --
+  * `docker history arguments`
+    * check the arguments passed to build
 
 ## ONBUILD
 

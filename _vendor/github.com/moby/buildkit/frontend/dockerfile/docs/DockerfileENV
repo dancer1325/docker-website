@@ -1,0 +1,19 @@
+# Use an existing base image
+FROM ubuntu:20.04
+
+# 1. Invalid to pass value | ANOTHER line
+#ENV
+#GIRL_NAME=rosi
+
+# 2. set 1 `ENV` instruction / MULTIPLE `<key>=<value> ...` variables
+ENV GIRL_NAME=rosi QUOTE_REMOVED="Quotes removed" SET_WHITESPACE=Alfred\ whitespace
+
+# 3. syntax / NO passing "="
+ENV ONE TWO
+# if you do NOT specify "=" -> first word is taken as key of the environment variable
+ENV ONEANOTHER TWO THREE world
+
+# TODO: Add more examples about the notes
+
+# Define the command to run when the container starts
+CMD ["sleep", "3600"]
