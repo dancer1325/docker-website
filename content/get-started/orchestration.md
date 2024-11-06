@@ -4,99 +4,89 @@ keywords: orchestration, deploy, kubernetes, swarm,
 description: Get oriented on some basics of Docker and install Docker Desktop.
 ---
 
-Containerization provides an opportunity to move and scale applications to
-clouds and data centers. Containers effectively guarantee that those applications run the
-same way anywhere, allowing you to quickly and easily take advantage of all
-these environments. Additionally, as you scale your applications up, you need some
-tooling to help automate the maintenance of those applications, enable the
-replacement of failed containers automatically, and manage the roll-out of
-updates and reconfigurations of those containers during their lifecycle.
-
-Tools to manage, scale, and maintain containerized applications are called
-orchestrators. Two of the most popular orchestration tools are Kubernetes and
-Docker Swarm. Docker Desktop provides development environments for both of these
-orchestrators.
-
-The advanced modules teach you how to:
-
-1. [Set up and use a Kubernetes environment on your development machine](kube-deploy.md)
-2. [Set up and use a Swarm environment on your development machine](swarm-deploy.md)
+* Containerization
+  * allows
+    * -- move easier to -- clouds & data centers
+      * Reason: 🧠 applications run similarly 🧠
+    * scale applications
+* orchestrators
+  * == tool / help 
+    * maintenance of those applications,
+    * replacement of failed containers automatically
+    * manage lifecycle of containers
+      * roll-out of updates
+      * reconfigurations of those containers
+    * scaling up & down containers
+  * _Example:_ Kubernetes and Docker Swarm
+    * 👀Docker Desktop -- provides -- development environments for BOTH 👀
+    * see 
+      1. [Set up and use a Kubernetes environment | your development machine](kube-deploy.md)
+      2. [Set up and use a Swarm environment | your development machine](swarm-deploy.md)
 
 ## Turn on Kubernetes
 
-Docker Desktop sets up Kubernetes for you quickly and easily. Follow the setup and validation instructions appropriate for your operating system:
+* goal
+  * run simple containerized workloads | Kubernetes
 
-{{< tabs group="os" >}}
-{{< tab name="Mac and Linux" >}}
+### Mac 6 Linux
 
-### Mac
+1. Docker Dashboard, **Settings**, select the **Kubernetes** tab
+2. Select the checkbox labeled **Enable Kubernetes**, and select **Apply & Restart**.
+   1. green light == Kubernetes has been successfully enabled
+3. Make simple exercises with Kubernetes
+   1. create a text file called `pod.yaml`
 
-1.  From the Docker Dashboard, navigate to **Settings**, and select the **Kubernetes** tab.
+       ```yaml
+       apiVersion: v1
+       kind: Pod
+       metadata:
+         name: demo
+       spec:
+         containers:
+         - name: testpod
+           image: alpine:latest
+           command: ["ping", "8.8.8.8"]
+       ```
 
-2.  Select the checkbox labeled **Enable Kubernetes**, and select **Apply & Restart**. Docker Desktop automatically sets up Kubernetes for you. You'll know that Kubernetes has been successfully enabled when you see a green light beside 'Kubernetes _running_' in **Settings**.
+   2. | terminal
+      1. path | `pod.yaml`, and run
 
-3. To confirm that Kubernetes is up and running, create a text file called `pod.yaml` with the following content:
+          ```console
+          $ kubectl apply -f pod.yaml
+          ```
 
-    ```yaml
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: demo
-    spec:
-      containers:
-      - name: testpod
-        image: alpine:latest
-        command: ["ping", "8.8.8.8"]
-    ```
+      2. | ANY PATH
 
-    This describes a pod with a single container, isolating a simple ping to 8.8.8.8.
+          ```console
+          $ kubectl get pods
+          
+          # output
+          NAME      READY     STATUS    RESTARTS   AGE
+          demo      1/1       Running   0          4s
+          ```
 
-4. In a terminal, navigate to where you created `pod.yaml` and create your pod:
+          ```console  
+          $ kubectl logs demo
+          
 
-    ```console
-    $ kubectl apply -f pod.yaml
-    ```
+          # output 
+          PING 8.8.8.8 (8.8.8.8): 56 data bytes
+          64 bytes from 8.8.8.8: seq=0 ttl=37 time=21.393 ms
+          64 bytes from 8.8.8.8: seq=1 ttl=37 time=15.320 ms
+          64 bytes from 8.8.8.8: seq=2 ttl=37 time=11.111 ms
+          ...
+          ```
 
-5. Check that your pod is up and running:
-
-    ```console
-    $ kubectl get pods
-    ```
-
-    You should see something like:
-
-    ```shell
-    NAME      READY     STATUS    RESTARTS   AGE
-    demo      1/1       Running   0          4s
-    ```
-
-6. Check that you get the logs you'd expect for a ping process:
-
-    ```console
-    $ kubectl logs demo
-    ```
-
-    You should see the output of a healthy ping process:
-
-    ```shell
-    PING 8.8.8.8 (8.8.8.8): 56 data bytes
-    64 bytes from 8.8.8.8: seq=0 ttl=37 time=21.393 ms
-    64 bytes from 8.8.8.8: seq=1 ttl=37 time=15.320 ms
-    64 bytes from 8.8.8.8: seq=2 ttl=37 time=11.111 ms
-    ...
-    ```
-
-7. Finally, tear down your test pod:
-
-    ```console
-    $ kubectl delete -f pod.yaml
-    ```
+          ```console
+          $ kubectl delete -f pod.yaml
+          ```
 
 {{< /tab >}}
 {{< tab name="Windows" >}}
 
 ### Windows
 
+* TODO:
 1. From the Docker Dashboard, navigate to **Settings**, and select the **Kubernetes** tab.
 
 2. Select the checkbox labeled **Enable Kubernetes**, and select **Apply & Restart**. Docker Desktop automatically sets up Kubernetes for you. You'll know that Kubernetes has been successfully enabled when you see a green light beside 'Kubernetes _running_' in the **Settings** menu.
@@ -163,22 +153,18 @@ Docker Desktop sets up Kubernetes for you quickly and easily. Follow the setup a
 
 ## Enable Docker Swarm
 
-Docker Desktop runs primarily on Docker Engine, which has everything you need to run a Swarm built in. Follow the setup and validation instructions appropriate for your operating system:
-
-{{< tabs group="os" >}}
-{{< tab name="Mac" >}}
+* goal
+  * run simple containerized workloads | Docker Swarm
 
 ### Mac
 
-1. Open a terminal, and initialize Docker Swarm mode:
+1. | terminal
 
     ```console
+    # initialize Docker Swarm mode
     $ docker swarm init
-    ```
-
-    If all goes well, you should see a message similar to the following:
-
-    ```shell
+    
+    # if ALL goes well -> Output
     Swarm initialized: current node (tjjggogqpnpj2phbfbz8jd5oq) is now a manager.
 
     To add a worker to this swarm, run the following command:
@@ -188,34 +174,26 @@ Docker Desktop runs primarily on Docker Engine, which has everything you need to
     To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
     ```
 
-2. Run a simple Docker service that uses an alpine-based filesystem, and isolates a ping to 8.8.8.8:
-
     ```console
+    # Run a simple Docker service
+    # 1. uses an alpine-based filesystem 
+    # 2. isolates a ping to 8.8.8.8
     $ docker service create --name demo alpine:latest ping 8.8.8.8
     ```
 
-3. Check that your service created one running container:
-
     ```console
+    # Check / your service created 1 running container 
     $ docker service ps demo
-    ```
-
-    You should see something like:
-
-    ```shell
+    
+    # sample output
     ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE           ERROR               PORTS
     463j2s3y4b5o        demo.1              alpine:latest       docker-desktop      Running             Running 8 seconds ago
     ```
 
-4. Check that you get the logs you'd expect for a ping process:
-
     ```console
     $ docker service logs demo
-    ```
-
-    You should see the output of a healthy ping process:
-
-    ```shell
+    
+    # sample output
     demo.1.463j2s3y4b5o@docker-desktop    | PING 8.8.8.8 (8.8.8.8): 56 data bytes
     demo.1.463j2s3y4b5o@docker-desktop    | 64 bytes from 8.8.8.8: seq=0 ttl=37 time=13.005 ms
     demo.1.463j2s3y4b5o@docker-desktop    | 64 bytes from 8.8.8.8: seq=1 ttl=37 time=13.847 ms
@@ -223,14 +201,15 @@ Docker Desktop runs primarily on Docker Engine, which has everything you need to
     ...
     ```
 
-5. Finally, tear down your test service:
-
     ```console
+    # tear down test service
     $ docker service rm demo
     ```
-
-{{< /tab >}}
-{{< tab name="Windows" >}}
+   
+    ```console
+    # kill the node for swarm
+    $ docker swarm leave --force
+    ```
 
 ### Windows
 
@@ -295,13 +274,6 @@ Docker Desktop runs primarily on Docker Engine, which has everything you need to
 
 {{< /tab >}}
 {{< /tabs >}}
-
-## Conclusion
-
-At this point, you've confirmed that you can run simple containerized workloads in Kubernetes and Swarm. The next step is to write a YAML file that describes how to run and manage these containers.
-
-- [Deploy to Kubernetes](kube-deploy.md)
-- [Deploy to Swarm](swarm-deploy.md)
 
 ## CLI references
 
