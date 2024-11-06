@@ -49,6 +49,11 @@ A Dockerfile is a text document in which you define the build steps for your
 application. You write the Dockerfile in a domain-specific language, called the
 Dockerfile syntax.
 
+Each instruction in a Dockerfile creates a layer in the image. When you
+change the Dockerfile and rebuild the image, only those layers which have
+changed are rebuilt. This is part of what makes images so lightweight, small,
+and fast, when compared to other virtualization technologies.
+
 Here's the Dockerfile used as the starting point for this guide:
 
 ```dockerfile
