@@ -7,6 +7,8 @@ _build:
 
 # About these files
 
+* ⚠️check [`docker/cli`](https://github.com/docker/cli) repository ⚠️ 
+* TODO:
 The files in this directory are stub files which include the file
 `/_includes/cli.md`, which parses YAML files generated from the
 [`docker/cli`](https://github.com/docker/cli) repository. The YAML files
