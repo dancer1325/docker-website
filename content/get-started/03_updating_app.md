@@ -5,10 +5,15 @@ keywords: get started, setup, orientation, quickstart, intro, concepts, containe
 description: Making changes to your application
 ---
 
-In [part 2](./02_our_app.md), you containerized a todo application. In this part, you'll update the application and image. You'll also learn how to stop and remove a container.
+* goal
+  * update the application & image
+  * how to
+    * stop a container
+    * remove a container
 
 ## Update the source code
 
+* TODO:
 In the following steps, you'll change the "empty text" when you don't have any todo list items to "You have no todo items yet! Add one above!"
 
 
