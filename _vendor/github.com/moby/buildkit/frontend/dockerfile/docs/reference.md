@@ -433,11 +433,15 @@ build context. For more information, see
 
 ## Shell and exec form
 
-The `RUN`, `CMD`, and `ENTRYPOINT` instructions all have two possible forms:
+* used by
+  * `RUN`,
+  * `CMD`,
+  * `ENTRYPOINT`
+* possible forms
+  - `INSTRUCTION ["executable","param1","param2"]` (exec form)
+  - `INSTRUCTION command param1 param2` (shell form)
 
-- `INSTRUCTION ["executable","param1","param2"]` (exec form)
-- `INSTRUCTION command param1 param2` (shell form)
-
+* TODO:
 The exec form makes it possible to avoid shell string munging, and to invoke
 commands using a specific command shell, or any other executable. It uses a
 JSON array syntax, where each element in the array is a command, flag, or
@@ -895,15 +899,12 @@ Default sandbox mode can be activated via `--security=sandbox`, but that is no-o
 
 ## CMD
 
-The `CMD` instruction sets the command to be executed when running a container
-from an image.
-
-You can specify `CMD` instructions using
-[shell or exec forms](#shell-and-exec-form):
-
-- `CMD ["executable","param1","param2"]` (exec form)
-- `CMD ["param1","param2"]` (exec form, as default parameters to `ENTRYPOINT`)
-- `CMD command param1 param2` (shell form)
+* 👀== command / executed | running a container -- from an -- image 👀
+* way to specify [shell or exec forms](#shell-and-exec-form)
+  - TODO:
+  - `CMD ["executable","param1","param2"]` (exec form)
+  - `CMD ["param1","param2"]` (exec form, as default parameters to `ENTRYPOINT`)
+  - `CMD command param1 param2` (shell form)
 
 There can only be one `CMD` instruction in a Dockerfile. If you list more than
 one `CMD`, only the last one takes effect.
