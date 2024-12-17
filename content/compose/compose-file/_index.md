@@ -37,24 +37,24 @@ aliases:
 - /compose/compose-file/compose-file-v1/
 ---
 
->**New to Compose?**
->
-> Find more information about the [key features and use cases of Docker Compose](../intro/features-uses.md) or [try the get started guide](../gettingstarted.md).
-{ .tip }
+* Compose Specification
+  * 👀== latest & recommended version of the Compose file format 👀
+  * 👀== merging of v2.x + v3.x 👀
+  * requirements
+    * Docker Compose CLI v1.27.0+ (-- named as -- Compose V2)
+  * allows
+    * define a [Compose file](../compose-application-model.md) 
+  * | Docker documentation, named as Docker Compose implementation
+  * 👀if you want to implement your OWN version of the Compose Specification -> see [Compose Specification repository](https://github.com/compose-spec/compose-spec) 👀
 
-The Compose Specification is the latest and recommended version of the Compose file format. It helps you define a [Compose file](../compose-application-model.md) which is used to configure your Docker application’s services, networks, volumes, and more.
+* Compose V1
+  * NO longer receives updates
+  * NOT available | NEW releases of Docker Desktop
 
-Legacy versions 2.x and 3.x of the Compose file format were merged into the Compose Specification. It is implemented in versions 1.27.0 and above (also known as Compose V2) of the Docker Compose CLI.
+* Compose V2
+  * included with ALL currently supported versions of Docker Desktop
+  * see [Migrate to Compose V2](/compose/migrate)
 
-The Compose Specification on Docker Docs is the Docker Compose implementation. If you wish to implement your own version of the Compose Specification, see the [Compose Specification repository](https://github.com/compose-spec/compose-spec).
-
-> **Note**
->
-> Compose V1 no longer receives updates and is not available in new releases of Docker Desktop.
->
-> Compose V2 is included with all currently supported versions of Docker Desktop.
-> For more information, see [Migrate to Compose V2](/compose/migrate).
-
-Use the following links to navigate key sections of the Compose Specification. 
-
-{{< grid >}}
+* see 
+  * [key features and use cases of Docker Compose](../intro/features-uses.md)
+  * [get started guide](../gettingstarted.md)
