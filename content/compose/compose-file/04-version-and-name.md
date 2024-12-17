@@ -6,30 +6,32 @@ keywords: compose, compose specification, services, compose file reference
 
 ## Version top-level element (optional)
 
-The top-level `version` property is defined by the Compose Specification for backward compatibility. It is only informative.
+* top-level `version` property
+  * defined by the Compose Specification / backward compatibility
+    * -> Compose validates whether it can fully parse the Compose file 
+  * 👀ONLY informative 👀
+    * ❌== NOT used to select an exact schema -- to validate the -- Compose file ❌
+      * Reason: 🧠MOST recent schema | it's implemented 🧠
 
-Compose doesn't use `version` to select an exact schema to validate the Compose file, but
-prefers the most recent schema when it's implemented.
-
-Compose validates whether it can fully parse the Compose file. If some fields are unknown, typically
-because the Compose file was written with fields defined by a newer version of the Specification, you'll receive a warning message. 
+* 👀if SOME fields are unknown (_Example:_ Compose file was written with fields / defined by a NEWER version of the Specification) -> you'll receive a warning message 👀
 
 ## Name top-level element
 
-The top-level `name` property is defined by the Specification as the project name to be used if you don't set one explicitly.
-Compose offers a way for you to override this name, and sets a
-default project name to be used if the top-level `name` element is not set.
+* top-level `name` property
+  * if you do NOT specify -- defined by the Specification, as the -- project name
 
-Whenever a project name is defined by top-level `name` or by some custom mechanism, it is exposed for
-[interpolation](12-interpolation.md) and environment variable resolution as `COMPOSE_PROJECT_NAME`
+* [other ways to name Compose projects](../project-name.md)
 
-```yml
-services:
-  foo:
-    image: busybox
-    environment:
-      - COMPOSE_PROJECT_NAME
-    command: echo "I'm running ${COMPOSE_PROJECT_NAME}"
-```
+* `COMPOSE_PROJECT_NAME`
+  * == environment variable / has the project name (INDEPENDENTLY, if it's the default or specify by you)
+  * [interpolation](12-interpolation.md) 
+    * _Example:_ 
 
-For more information on other ways to name Compose projects, see [Specify a project name](../project-name.md).
+    ```yml
+    services:
+      foo:
+        image: busybox
+        environment:
+          - COMPOSE_PROJECT_NAME
+        command: echo "I'm running ${COMPOSE_PROJECT_NAME}"
+    ```
