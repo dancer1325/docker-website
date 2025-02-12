@@ -7,6 +7,11 @@ aliases:
 - /compose/compose-yaml-file/
 ---
 
+
+* uses
+  * configure your Docker application’s services, networks, volumes, ...
+
+* TODO:
 Docker Compose relies on a YAML configuration file, usually named `compose.yaml`. 
 
 The `compose.yaml` file follows the rules provided by the [Compose Specification](compose-file/_index.md) in how to define multi-container applications. This is the Docker Compose implementation of the formal [Compose Specification](https://github.com/compose-spec/compose-spec). 
