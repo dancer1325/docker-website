@@ -9,105 +9,103 @@ aliases:
 - /develop/develop-images/multistage-build/
 ---
 
-Multi-stage builds are useful to anyone who has struggled to optimize
-Dockerfiles while keeping them easy to read and maintain.
+* Multi-stage builds
+  * 💡1 `FROM` / EACH stage 💡
+    * == MULTIPLE `FROM` | your Dockerfile 
+    * `0` -- stage1
+  * allows
+    * 👀optimizing Dockerfiles / easy to read & maintain 👀
 
-## Use multi-stage builds
+## How to use?
 
-With multi-stage builds, you use multiple `FROM` statements in your Dockerfile.
-Each `FROM` instruction can use a different base, and each of them begins a new
-stage of the build. You can selectively copy artifacts from one stage to
-another, leaving behind everything you don't want in the final image.
+* different base / EACH `FROM` 
+* stage1's artifacts -- being copied to -- stage2's artifacts
 
-The following Dockerfile has two separate stages: one for building a binary,
-and another where the binary gets copied from the first stage into the next stage.
+* _Example:_ Dockerfile / 2 separate stages
+  * stage1
+    * builds a binary
+  * stage2
+    * stage1's binary is copied | HERE
+    * NOT Go SDK & intermediate artifacts NOT | HERE
 
-```dockerfile
-# syntax=docker/dockerfile:1
-FROM golang:{{% param "example_go_version" %}}
-WORKDIR /src
-COPY <<EOF ./main.go
-package main
+    ```dockerfile
+    # HERE, stage0 starts
+    FROM golang:{{% param "example_go_version" %}}
+    WORKDIR /src
+    COPY <<EOF ./main.go
+    package main
+    
+    import "fmt"
+    
+    func main() {
+      fmt.Println("hello, world")
+    }
+    EOF
+    RUN go build -o /bin/hello ./main.go
+    
+    # HERE, stage1 starts
+    FROM scratch
+    # 0     ==  stage1's built artifact
+    COPY --from=0 /bin/hello /bin/hello     
+    CMD ["/bin/hello"]
+    ```
 
-import "fmt"
+## How to build?
 
-func main() {
-  fmt.Println("hello, world")
-}
-EOF
-RUN go build -o /bin/hello ./main.go
+* `docker build -t imageNameToBuild .`
+  * == build as 1! stage
 
-FROM scratch
-COPY --from=0 /bin/hello /bin/hello
-CMD ["/bin/hello"]
-```
+## How to add names | your build stages?
 
-You only need the single Dockerfile. No need for a separate build script. Just
-run `docker build`.
+* `FROM .... as nickName`
+* _Example:_ 
+    ```dockerfile
+    # stage 0 / added a name
+    FROM golang:{{% param "example_go_version" %}} as build
+    WORKDIR /src
+    COPY <<EOF /src/main.go
+    package main
+    
+    import "fmt"
+    
+    func main() {
+      fmt.Println("hello, world")
+    }
+    EOF
+    RUN go build -o /bin/hello ./main.go
+    
+    # stage1 / refers -- via name to the -- stage0 
+    FROM scratch
+    COPY --from=build /bin/hello /bin/hello
+    CMD ["/bin/hello"]
+    ```
 
-```console
-$ docker build -t hello .
-```
+## Stop | specific build stage
 
-The end result is a tiny production image with nothing but the binary inside.
-None of the build tools required to build the application are included in the
-resulting image.
+* 💡== | build your image,
+  * NOT need to build ALL Dockerfile's stages 💡 
+* steps
+  * `docker build --target stageNameOrNumberInWhichStop -t buildNameToGive .`
+    * == specify a target build stage 
+    * _Example:_ | [PREVIOUS example](#how-to-add-names--your-build-stages)
 
-How does it work? The second `FROM` instruction starts a new build stage with
-the `scratch` image as its base. The `COPY --from=0` line copies just the
-built artifact from the previous stage into this new stage. The Go SDK and any
-intermediate artifacts are left behind, and not saved in the final image.
-
-## Name your build stages
-
-By default, the stages aren't named, and you refer to them by their integer
-number, starting with 0 for the first `FROM` instruction. However, you can
-name your stages, by adding an `AS <NAME>` to the `FROM` instruction. This
-example improves the previous one by naming the stages and using the name in
-the `COPY` instruction. This means that even if the instructions in your
-Dockerfile are re-ordered later, the `COPY` doesn't break.
-
-```dockerfile
-# syntax=docker/dockerfile:1
-FROM golang:{{% param "example_go_version" %}} as build
-WORKDIR /src
-COPY <<EOF /src/main.go
-package main
-
-import "fmt"
-
-func main() {
-  fmt.Println("hello, world")
-}
-EOF
-RUN go build -o /bin/hello ./main.go
-
-FROM scratch
-COPY --from=build /bin/hello /bin/hello
-CMD ["/bin/hello"]
-```
-
-## Stop at a specific build stage
-
-When you build your image, you don't necessarily need to build the entire
-Dockerfile including every stage. You can specify a target build stage. The
-following command assumes you are using the previous `Dockerfile` but stops at
-the stage named `build`:
-
-```console
-$ docker build --target build -t hello .
-```
-
-A few scenarios where this might be useful are:
-
-- Debugging a specific build stage
-- Using a `debug` stage with all debugging symbols or tools enabled, and a
-  lean `production` stage
-- Using a `testing` stage in which your app gets populated with test data, but
-  building for production using a different stage which uses real data
+      ```console
+      $ docker build --target build -t hello .
+      ```
+* use cases
+  * Debugging a specific build stage
+  * Using a `debug` stage / 
+    * ALL debugging symbols or tools enabled
+    * lean `production` stage
+  * MULTIPLE stagges /
+    * | `testing` stage,
+      * your app gets populated
+    * | `production` stage,
+      * uses real data
 
 ## Use an external image as a stage
 
+* TODO:
 When using multi-stage builds, you aren't limited to copying from stages you
 created earlier in your Dockerfile. You can use the `COPY --from` instruction to
 copy from a separate image, either using the local image name, a tag available
@@ -161,8 +159,7 @@ FROM base AS stage2
 RUN echo "stage2"
 ```
 
-With [BuildKit enabled](../buildkit/index.md#getting-started), building the
-`stage2` target in this Dockerfile means only `base` and `stage2` are processed.
+With [BuildKit enabled](../buildkit/index.md#getting-started), building the `stage2` target in this Dockerfile means only `base` and `stage2` are processed.
 There is no dependency on `stage1`, so it's skipped.
 
 ```console
