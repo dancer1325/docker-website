@@ -125,3 +125,6 @@ grid:
       - text: "SCIM"
         url: "/security/for-admins/scim/"
 ---
+
+* top navigation bar
+* main topics grid -- ☝ -- 
