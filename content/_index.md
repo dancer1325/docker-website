@@ -170,5 +170,9 @@ grid:
         url: "/offload/about/"
 ---
 
+* main topics grid -- ☝ --
 * top navigation bar
-* main topics grid -- ☝ -- 
+  * [Get started](get-started)
+  * [Guides](guides)
+  * [Manuals](manuals)
+  * [Reference](reference)

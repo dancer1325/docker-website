@@ -124,6 +124,20 @@ Docker app.
 
 ## Topics for Linux and Mac
 
+### Volume mounting -- requires -- file sharing / ANY project directories outside of `$HOME`
+
+* turn on [file sharing](../settings/linux.md#file-sharing)
+   * use cases
+      * mounted volumes & get runtime errors /
+         * application file is NOT found, or
+         * access to a volume mount is denied, or
+         * service can NOT start (_Example:_ using [Docker Compose](../../compose/gettingstarted.md))
+   * how to configure?
+      * **Settings**, select **Resources** & **File sharing**
+         * == share the drive / contains the
+            * Dockerfile
+            * volume
+
 ### Docker Desktop fails to start on Mac or Linux platforms
 
 #### Error message 

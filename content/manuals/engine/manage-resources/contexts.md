@@ -6,91 +6,89 @@ aliases:
   - /engine/context/working-with-contexts/
 ---
 
+* goal
+  * contexts
+
 ## Introduction
 
-This guide shows how you can use contexts to manage Docker daemons from a single client.
+* contexts
+  * allows you to
+    * manage Docker daemons | 1! client
+      * _Examples:_ 2 contexts | 1! Docker client
+        * default context / run locally
+        * remote, shared context
+  * == ALL information / required to manage resources | daemon
+    * == 💡name and description + endpoint configuration + TLS info💡
 
-Each context contains all information required to manage resources on the daemon.
-The `docker context` command makes it easy to configure these contexts and switch between them.
+* `docker context`
+  * allows you to
+    * configure these contexts
 
-As an example, a single Docker client might be configured with two contexts:
-
-- A default context running locally
-- A remote, shared context
-
-Once these contexts are configured,
-you can use the `docker context use <context-name>` command
-to switch between them.
+* `docker context use <context-name>` 
+  * allows you to,
+    * switch between contexts
 
 ## Prerequisites
 
-To follow the examples in this guide, you'll need:
-
-- A Docker client that supports the top-level `context` command
-
-Run `docker context` to verify that your Docker client supports contexts.
+- Docker client / supports the top-level `context` command
+  - `docker context`
+    - check that your Docker client supports contexts
 
 ## The anatomy of a context
 
-A context is a combination of several properties. These include:
+* `docker context ls` OR `docker context inspect`
+  * list AVAILABLE contexts
+  * _Example:_ 
 
-- Name and description
-- Endpoint configuration
-- TLS info
-
-To list available contexts, use the `docker context ls` command.
-
-```console
-$ docker context ls
-NAME        DESCRIPTION                               DOCKER ENDPOINT               ERROR
-default *                                             unix:///var/run/docker.sock
-```
-
-This shows a single context called "default".
-It's configured to talk to a daemon through the local `/var/run/docker.sock` Unix socket.
-
-The asterisk in the `NAME` column indicates that this is the active context.
-This means all `docker` commands run against this context,
-unless overridden with environment variables such as `DOCKER_HOST` and `DOCKER_CONTEXT`,
-or on the command-line with the `--context` and `--host` flags.
-
-Dig a bit deeper with `docker context inspect`.
-The following example shows how to inspect the context called `default`.
-
-```console
-$ docker context inspect default
-[
-    {
-        "Name": "default",
-        "Metadata": {},
-        "Endpoints": {
-            "docker": {
-                "Host": "unix:///var/run/docker.sock",
-                "SkipTLSVerify": false
+    ```console
+    $ docker context ls
+    NAME        DESCRIPTION                               DOCKER ENDPOINT               ERROR
+    default *                                             unix:///var/run/docker.sock
+    ```
+    ```console
+    $ docker context inspect default
+    [
+        {
+            "Name": "default",
+            "Metadata": {},
+            "Endpoints": {
+                "docker": {
+                    "Host": "unix:///var/run/docker.sock",
+                    "SkipTLSVerify": false
+                }
+            },
+            "TLSMaterial": {},
+            "Storage": {
+                "MetadataPath": "\u003cIN MEMORY\u003e",
+                "TLSPath": "\u003cIN MEMORY\u003e"
             }
-        },
-        "TLSMaterial": {},
-        "Storage": {
-            "MetadataPath": "\u003cIN MEMORY\u003e",
-            "TLSPath": "\u003cIN MEMORY\u003e"
         }
-    }
-]
-```
+    ]
+    ```
 
-### Create a new context
+* `NAME`
+  * `*`
+    * == ACTIVE context
+* `DOCKER ENDPOINT`
+  * == way to talk -- to a -- daemon
+  * 👀ways to override it -- via -👀
+    * environment variables
+      * `DOCKER_HOST`
+      * `DOCKER_CONTEXT`
+    * CL flags
+      * `--context`
+      * `--host`
 
-You can create new contexts with the `docker context create` command.
+### Create a new context -- `docker context create` --
 
-The following example creates a new context called `docker-test` and specifies
-the host endpoint of the context to TCP socket `tcp://docker:2375`.
+* _Example:_ 
 
-```console
-$ docker context create docker-test --docker host=tcp://docker:2375
-docker-test
-Successfully created context "docker-test"
-```
-
+    ```console
+    $ docker context create docker-test --docker host=tcp://docker:2375
+    docker-test
+    Successfully created context "docker-test"
+    ```
+* TODO:
 The new context is stored in a `meta.json` file below `~/.docker/contexts/`.
 Each new context you create gets its own `meta.json` stored in a dedicated sub-directory of `~/.docker/contexts/`.
 
@@ -105,28 +103,22 @@ docker-test                                           tcp://docker:2375
 
 The current context is indicated with an asterisk ("\*").
 
-## Use a different context
+## Use a different context -- `docker context use` --
 
-You can use `docker context use` to switch between contexts.
+* _Example:_ 
+    ```console
+    $ docker context use docker-test
+    docker-test
+    Current context is now "docker-test"
+    ```
 
-The following command will switch the `docker` CLI to use the `docker-test` context.
-
-```console
-$ docker context use docker-test
-docker-test
-Current context is now "docker-test"
-```
-
-Verify the operation by listing all contexts and ensuring the asterisk ("\*") is against the `docker-test` context.
-
-```console
-$ docker context ls
-NAME            DESCRIPTION                           DOCKER ENDPOINT               ERROR
-default                                               unix:///var/run/docker.sock
-docker-test *                                         tcp://docker:2375
-```
-
-`docker` commands will now target endpoints defined in the `docker-test` context.
+    ```console
+    # check the ACTIVE context
+    $ docker context ls
+    NAME            DESCRIPTION                           DOCKER ENDPOINT               ERROR
+    default                                               unix:///var/run/docker.sock
+    docker-test *                                         tcp://docker:2375
+    ```
 
 You can also set the current context using the `DOCKER_CONTEXT` environment variable.
 The environment variable overrides the context set with `docker context use`.
