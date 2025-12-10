@@ -3,8 +3,7 @@ short: Fetch the logs of a service or task
 long: |-
     The `docker service logs` command batch-retrieves logs present at the time of execution.
 
-    > **Note**
-    >
+    > [!NOTE]
     > This is a cluster management command, and must be executed on a swarm
     > manager node. To learn about managers and workers, refer to the
     > [Swarm mode section](/engine/swarm/) in the
@@ -15,13 +14,12 @@ long: |-
     for all of the containers in that service. If a task is passed, it will only
     display logs from that particular task.
 
-    > **Note**
-    >
+    > [!NOTE]
     > This command is only functional for services that are started with
     > the `json-file` or `journald` logging driver.
 
     For more information about selecting and configuring logging drivers, refer to
-    [Configure logging drivers](/config/containers/logging/configure/).
+    [Configure logging drivers](/engine/logging/configure/).
 
     The `docker service logs --follow` command will continue streaming the new output from
     the service's `STDOUT` and `STDERR`.
@@ -42,7 +40,7 @@ long: |-
     a given date. You can specify the date as an RFC 3339 date, a UNIX
     timestamp, or a Go duration string (e.g. `1m30s`, `3h`). Besides RFC3339 date
     format you may also use RFC3339Nano, `2006-01-02T15:04:05`,
-    `2006-01-02T15:04:05.999999999`, `2006-01-02Z07:00`, and `2006-01-02`. The local
+    `2006-01-02T15:04:05.999999999`, `2006-01-02T07:00`, and `2006-01-02`. The local
     timezone on the client will be used if you do not provide either a `Z` or a
     `+-00:00` timezone offset at the end of the timestamp. When providing Unix
     timestamps enter seconds[.nanoseconds], where seconds is the number of seconds
@@ -161,6 +159,7 @@ inherited_options:
       kubernetes: false
       swarm: false
 deprecated: false
+hidden: false
 min_api_version: "1.29"
 experimental: false
 experimentalcli: false

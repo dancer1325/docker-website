@@ -7,8 +7,7 @@ long: |-
     actual scaling of the service may take some time. To stop all replicas of a
     service while keeping the service active in the swarm you can set the scale to 0.
 
-    > **Note**
-    >
+    > [!NOTE]
     > This is a cluster management command, and must be executed on a swarm
     > manager node. To learn about managers and workers, refer to the
     > [Swarm mode section](/engine/swarm/) in the
@@ -73,7 +72,7 @@ examples: |-
     3pr5mlvu3fh9  frontend  replicated  15/50     nginx:alpine
     ```
 
-    You can also scale a service using the [`docker service update`](service_update.md)
+    You can also scale a service using the [`docker service update`](/reference/cli/docker/service/update/)
     command. The following commands are equivalent:
 
     ```console
@@ -97,9 +96,10 @@ examples: |-
 
     ID            NAME      MODE        REPLICAS  IMAGE
     3pr5mlvu3fh9  frontend  replicated  5/5       nginx:alpine
-    74nzcxxjv6fq  backend   replicated  3/3       redis:3.0.6
+    74nzcxxjv6fq  backend   replicated  3/3       redis:7.4.1
     ```
 deprecated: false
+hidden: false
 min_api_version: "1.24"
 experimental: false
 experimentalcli: false

@@ -1,73 +1,185 @@
 # syntax=docker/dockerfile:1
+# check=skip=InvalidBaseImagePlatform
 
-ARG GO_VERSION=1.21
+ARG ALPINE_VERSION=3.21
+ARG GO_VERSION=1.24
 ARG HTMLTEST_VERSION=0.17.0
+ARG VALE_VERSION=3.11.2
+ARG HUGO_VERSION=0.141.0
+ARG NODE_VERSION=22
+ARG PAGEFIND_VERSION=1.3.0
 
-FROM golang:${GO_VERSION}-alpine as base
-WORKDIR /src
-RUN apk --update add nodejs npm git gcompat
+# base defines the generic base stage
+FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION} AS base
+RUN apk add --no-cache \
+    git \
+    nodejs \
+    npm \
+    gcompat \
+    rsync
 
-FROM base as node
-COPY package*.json .
-ENV NODE_ENV=production
-RUN npm install
+# npm downloads Node.js dependencies
+FROM base AS npm
+ENV NODE_ENV="production"
+WORKDIR /out
+RUN --mount=source=package.json,target=package.json \
+    --mount=source=package-lock.json,target=package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci
 
-FROM base as hugo
-ARG HUGO_VERSION=0.122.0
+# hugo downloads the Hugo binary
+FROM base AS hugo
 ARG TARGETARCH
-WORKDIR /tmp/hugo
-RUN wget -O "hugo.tar.gz" "https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-${TARGETARCH}.tar.gz"
-RUN tar -xf "hugo.tar.gz" hugo
+ARG HUGO_VERSION
+WORKDIR /out
+ADD https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-${TARGETARCH}.tar.gz .
+RUN tar xvf hugo_extended_${HUGO_VERSION}_linux-${TARGETARCH}.tar.gz
 
-FROM base as build-base
-COPY --from=hugo /tmp/hugo/hugo /bin/hugo
-COPY --from=node /src/node_modules /src/node_modules
+# build-base is the base stage used for building the site
+FROM base AS build-base
+WORKDIR /project
+COPY --from=hugo /out/hugo /bin/hugo
+COPY --from=npm /out/node_modules node_modules
 COPY . .
 
-FROM build-base as dev
+# build creates production builds with Hugo
+FROM build-base AS build
+# HUGO_ENV sets the hugo.Environment (production, development, preview)
+ARG HUGO_ENV="development"
+# DOCS_URL sets the base URL for the site
+ARG DOCS_URL="https://docs.docker.com"
+ENV HUGO_CACHEDIR="/tmp/hugo_cache"
+RUN --mount=type=cache,target=/tmp/hugo_cache \
+    hugo --gc --minify -e $HUGO_ENV -b $DOCS_URL
 
-FROM build-base as build
-ARG HUGO_ENV
-ARG DOCS_URL
-RUN hugo --gc --minify -d /out -e $HUGO_ENV -b $DOCS_URL
-
-FROM scratch as release
-COPY --from=build /out /
-
-FROM davidanson/markdownlint-cli2:v0.12.1 as lint
-USER root
+# lint lints markdown files
+FROM ghcr.io/igorshubovych/markdownlint-cli:v0.45.0 AS lint
 RUN --mount=type=bind,target=. \
-    /usr/local/bin/markdownlint-cli2 \
+    markdownlint \
     "content/**/*.md" \
-    "#content/engine/release-notes/*.md" \
-    "#content/desktop/previous-versions/*.md"
+    --ignore "content/manuals/engine/release-notes/*.md" \
+    --ignore "content/manuals/desktop/previous-versions/*.md"
 
-FROM wjdp/htmltest:v${HTMLTEST_VERSION} as test
+# test validates HTML output and checks for broken links
+FROM wjdp/htmltest:v${HTMLTEST_VERSION} AS test
 WORKDIR /test
-COPY --from=build /out ./public
+COPY --from=build /project/public ./public
 ADD .htmltest.yml .htmltest.yml
 RUN htmltest
 
-FROM build-base as update-modules
-ARG MODULE="-u"
-RUN hugo mod get ${MODULE}
+# vale
+FROM jdkato/vale:v${VALE_VERSION} AS vale-run
+WORKDIR /src
+ARG GITHUB_ACTIONS
+RUN --mount=type=bind,target=.,rw <<EOT
+  set -e
+  mkdir /out
+  args=""
+  [ "$GITHUB_ACTIONS" = "true" ] && args="--output=.vale-rdjsonl.tmpl"
+  set -x
+  vale sync
+  vale $args content/ | tee /out/vale.out
+EOT
+
+FROM scratch AS vale
+COPY --from=vale-run /out/vale.out /
+
+# update-modules downloads and vendors Hugo modules
+FROM build-base AS update-modules
+# MODULE is the Go module path and version of the module to update
+ARG MODULE
+RUN <<"EOT"
+set -ex
+if [ -n "$MODULE" ]; then
+    hugo mod get ${MODULE}
+    RESOLVED=$(cat go.mod | grep -m 1 "${MODULE/@*/}" | awk '{print $1 "@" $2}')
+    go mod edit -replace "${MODULE/@*/}=${RESOLVED}";
+else
+    echo "no module set";
+fi
+EOT
 RUN hugo mod vendor
 
-FROM scratch as vendor
-COPY --from=update-modules /src/_vendor /_vendor
-COPY --from=update-modules /src/go.* /
+# vendor is an empty stage with only vendored Hugo modules
+FROM scratch AS vendor
+COPY --from=update-modules /project/_vendor /_vendor
+COPY --from=update-modules /project/go.* /
 
-FROM build-base as build-upstream
+FROM base AS validate-vendor
+RUN --mount=target=/context \
+  --mount=type=bind,from=vendor,target=/out \
+  --mount=target=.,type=tmpfs <<EOT
+set -e
+rsync -a /context/. .
+git add -A
+rm -rf _vendor
+cp -rf /out/* .
+if [ -n "$(git status --porcelain -- go.mod go.sum _vendor)" ]; then
+  echo >&2 'ERROR: Vendor result differs. Please vendor your package with "make vendor"'
+  git status --porcelain -- go.mod go.sum _vendor
+  exit 1
+fi
+EOT
+
+# build-upstream builds an upstream project with a replacement module
+FROM build-base AS build-upstream
+# UPSTREAM_MODULE_NAME is the canonical upstream repository name and namespace (e.g. moby/buildkit)
 ARG UPSTREAM_MODULE_NAME
+# UPSTREAM_REPO is the repository of the project to validate (e.g. dvdksn/buildkit)
 ARG UPSTREAM_REPO
+# UPSTREAM_COMMIT is the commit hash of the upstream project to validate
 ARG UPSTREAM_COMMIT
+# HUGO_MODULE_REPLACEMENTS is the replacement module for the upstream project
 ENV HUGO_MODULE_REPLACEMENTS="github.com/${UPSTREAM_MODULE_NAME} -> github.com/${UPSTREAM_REPO} ${UPSTREAM_COMMIT}"
-RUN hugo --ignoreVendorPaths "github.com/${UPSTREAM_MODULE_NAME}" -d /out
+RUN hugo --ignoreVendorPaths "github.com/${UPSTREAM_MODULE_NAME}"
 
-FROM wjdp/htmltest:v${HTMLTEST_VERSION} as validate-upstream
+# validate-upstream validates HTML output for upstream builds
+FROM wjdp/htmltest:v${HTMLTEST_VERSION} AS validate-upstream
 WORKDIR /test
-COPY --from=build-upstream /out ./public
+COPY --from=build-upstream /project/public ./public
 ADD .htmltest.yml .htmltest.yml
 RUN htmltest
 
-FROM dev
+# unused-media checks for unused graphics and other media
+FROM alpine:${ALPINE_VERSION} AS unused-media
+RUN apk add --no-cache fd ripgrep
+WORKDIR /test
+RUN --mount=type=bind,target=. ./hack/test/unused_media
+
+# path-warnings checks for duplicate target paths
+FROM build-base AS path-warnings
+RUN hugo --printPathWarnings > ./path-warnings.txt
+RUN <<EOT
+DUPLICATE_TARGETS=$(grep "Duplicate target paths" ./path-warnings.txt)
+if [ ! -z "$DUPLICATE_TARGETS" ]; then
+    echo "$DUPLICATE_TARGETS"
+    echo "You probably have a duplicate alias defined. Please check your aliases."
+    exit 1
+fi
+EOT
+
+# pagefind installs the Pagefind runtime
+FROM base AS pagefind
+ARG PAGEFIND_VERSION
+COPY --from=build /project/public ./public
+RUN --mount=type=bind,src=pagefind.yml,target=pagefind.yml \
+    npx pagefind@v${PAGEFIND_VERSION} --output-path "/pagefind"
+
+# index generates a Pagefind index
+FROM scratch AS index
+COPY --from=pagefind /pagefind .
+
+# test-go-redirects checks that the /go/ redirects are valid
+FROM alpine:${ALPINE_VERSION} AS test-go-redirects
+WORKDIR /work
+RUN apk add yq
+COPY --from=build /project/public ./public
+RUN --mount=type=bind,target=. <<"EOT"
+set -ex
+./hack/test/go_redirects
+EOT
+
+# release is an empty scratch image with only compiled assets
+FROM scratch AS release
+COPY --from=build /project/public /
+COPY --from=pagefind /pagefind /pagefind

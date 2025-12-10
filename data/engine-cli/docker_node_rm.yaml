@@ -4,8 +4,7 @@ short: Remove one or more nodes from the swarm
 long: |-
     Removes the specified nodes from a swarm.
 
-    > **Note**
-    >
+    > [!NOTE]
     > This is a cluster management command, and must be executed on a swarm
     > manager node. To learn about managers and workers, refer to the
     > [Swarm mode section](/engine/swarm/) in the
@@ -74,6 +73,7 @@ examples: |-
     A manager node must be demoted to a worker node (using `docker node demote`)
     before you can remove it from the swarm.
 deprecated: false
+hidden: false
 min_api_version: "1.24"
 experimental: false
 experimentalcli: false

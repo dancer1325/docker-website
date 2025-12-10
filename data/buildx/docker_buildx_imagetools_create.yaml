@@ -3,9 +3,14 @@ short: Create a new image based on source images
 long: |-
     Create a new manifest list based on source manifests. The source manifests can
     be manifest lists or single platform distribution manifests and must already
-    exist in the registry where the new manifest is created. If only one source is
-    specified, create performs a carbon copy.
-usage: docker buildx imagetools create [OPTIONS] [SOURCE] [SOURCE...]
+    exist in the registry where the new manifest is created.
+
+    If only one source is specified and that source is a manifest list or image index,
+    create performs a carbon copy. If one source is specified and that source is *not*
+    a list or index, the output will be a manifest list, however you can disable this
+    behavior with `--prefer-index=false` which attempts to preserve the source manifest
+    format in the output.
+usage: docker buildx imagetools create [OPTIONS] [SOURCE...]
 pname: docker buildx imagetools
 plink: docker_buildx_imagetools.yaml
 options:
@@ -54,11 +59,33 @@ options:
       experimentalcli: false
       kubernetes: false
       swarm: false
+    - option: platform
+      shorthand: p
+      value_type: stringArray
+      default_value: '[]'
+      description: Filter specified platforms of target image
+      deprecated: false
+      hidden: false
+      experimental: false
+      experimentalcli: false
+      kubernetes: false
+      swarm: false
+    - option: prefer-index
+      value_type: bool
+      default_value: "true"
+      description: |
+        When only a single source is specified, prefer outputting an image index or manifest list instead of performing a carbon copy
+      deprecated: false
+      hidden: false
+      experimental: false
+      experimentalcli: false
+      kubernetes: false
+      swarm: false
     - option: progress
       value_type: string
       default_value: auto
       description: |
-        Set type of progress output (`auto`, `plain`, `tty`). Use plain to show container output
+        Set type of progress output (`auto`, `none`, `plain`, `rawjson`, `tty`). Use plain to show container output
       deprecated: false
       hidden: false
       experimental: false
@@ -88,6 +115,17 @@ inherited_options:
       experimentalcli: false
       kubernetes: false
       swarm: false
+    - option: debug
+      shorthand: D
+      value_type: bool
+      default_value: "false"
+      description: Enable debug logging
+      deprecated: false
+      hidden: false
+      experimental: false
+      experimentalcli: false
+      kubernetes: false
+      swarm: false
 examples: |-
     ### Add annotations to an image (--annotation) {#annotation}
 
@@ -104,8 +142,7 @@ examples: |-
       foo/bar:alpha foo/bar:beta foo/bar:gamma
     ```
 
-    > **Note**
-    >
+    > [!NOTE]
     > The `imagetools create` command supports adding annotations to the image
     > index and descriptor, using the following type prefixes:
     >
@@ -124,7 +161,7 @@ examples: |-
 
     ### Override the configured builder instance (--builder) {#builder}
 
-    Same as [`buildx --builder`](buildx.md#builder).
+    Same as [`buildx --builder`](/reference/cli/docker/buildx/#builder).
 
     ### Show final image instead of pushing (--dry-run) {#dry-run}
 

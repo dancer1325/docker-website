@@ -7,7 +7,7 @@ title: Running containers
 ---
 
 Docker runs processes in isolated containers. A container is a process
-which runs on a host. The host may be local or remote. When an you
+which runs on a host. The host may be local or remote. When you
 execute `docker run`, the container process that runs is isolated in
 that it has its own file system, its own networking, and its own
 isolated process tree separate from the host.
@@ -35,7 +35,7 @@ reference to create or run a container based on an image.
 
 An image tag is the image version, which defaults to `latest` when omitted. Use
 the tag to run a container from specific version of an image. For example, to
-run version `23.10` of the `ubuntu` image: `docker run ubuntu:23.10`.
+run version `24.04` of the `ubuntu` image: `docker run ubuntu:24.04`.
 
 #### Image digests
 
@@ -69,8 +69,7 @@ to start an interactive shell in the container (if the image you select has an
 $ docker run -it IMAGE sh
 ```
 
-> **Note**
->
+> [!NOTE]
 > Depending on your Docker system configuration, you may be
 > required to preface the `docker run` command with `sudo`. To avoid
 > having to use `sudo` with the `docker` command, your system
@@ -114,13 +113,13 @@ $ docker attach 0246aa4d1448
 For more information about `docker run` flags related to foreground and
 background modes, see:
 
-- [`docker run --detach`](commandline/container_run.md#detach): run container in background
-- [`docker run --attach`](commandline/container_run.md#attach): attach to `stdin`, `stdout`, and `stderr`
-- [`docker run --tty`](commandline/container_run.md#tty): allocate a pseudo-tty
-- [`docker run --interactive`](commandline/container_run.md#interactive): keep `stdin` open even if not attached
+- [`docker run --detach`](https://docs.docker.com/reference/cli/docker/container/run/#detach): run container in background
+- [`docker run --attach`](https://docs.docker.com/reference/cli/docker/container/run/#attach): attach to `stdin`, `stdout`, and `stderr`
+- [`docker run --tty`](https://docs.docker.com/reference/cli/docker/container/run/#tty): allocate a pseudo-tty
+- [`docker run --interactive`](https://docs.docker.com/reference/cli/docker/container/run/#interactive): keep `stdin` open even if not attached
 
 For more information about re-attaching to a background container, see
-[`docker attach`](commandline/container_attach.md).
+[`docker attach`](https://docs.docker.com/reference/cli/docker/container/attach/).
 
 ## Container identification
 
@@ -135,7 +134,7 @@ You can identify a container in three ways:
 The UUID identifier is a random ID assigned to the container by the daemon.
 
 The daemon generates a random string name for containers automatically. You can
-also defined a custom name using [the `--name` flag](./commandline/container_run.md#name).
+also define a custom name using [the `--name` flag](https://docs.docker.com/reference/cli/docker/container/run/#name).
 Defining a `name` can be a handy way to add meaning to a container. If you
 specify a `name`, you can use it when referring to the container in a
 user-defined network. This works for both background and foreground Docker
@@ -249,7 +248,7 @@ $ docker run -it --mount type=bind,source=[PATH],target=[PATH] busybox
 ```
 
 In this case, the `--mount` flag takes three parameters. A type (`bind`), and
-two paths. The `source` path is a the location on the host that you want to
+two paths. The `source` path is the location on the host that you want to
 bind mount into the container. The `target` path is the mount destination
 inside the container.
 
@@ -286,7 +285,7 @@ See 'docker run --help'.
 ### 126
 
 Exit code `126` indicates that the specified contained command can't be invoked.
-The container command in the following example is: `/etc; echo $?`.
+The container command in the following example is: `/etc`.
 
 ```console
 $ docker run busybox /etc; echo $?
@@ -400,14 +399,14 @@ We have four ways to set user memory usage:
 Examples:
 
 ```console
-$ docker run -it ubuntu:22.04 /bin/bash
+$ docker run -it ubuntu:24.04 /bin/bash
 ```
 
 We set nothing about memory, this means the processes in the container can use
 as much memory and swap memory as they need.
 
 ```console
-$ docker run -it -m 300M --memory-swap -1 ubuntu:22.04 /bin/bash
+$ docker run -it -m 300M --memory-swap -1 ubuntu:24.04 /bin/bash
 ```
 
 We set memory limit and disabled swap memory limit, this means the processes in
@@ -415,16 +414,16 @@ the container can use 300M memory and as much swap memory as they need (if the
 host supports swap memory).
 
 ```console
-$ docker run -it -m 300M ubuntu:22.04 /bin/bash
+$ docker run -it -m 300M ubuntu:24.04 /bin/bash
 ```
 
 We set memory limit only, this means the processes in the container can use
 300M memory and 300M swap memory, by default, the total virtual memory size
-(--memory-swap) will be set as double of memory, in this case, memory + swap
+(`--memory-swap`) will be set as double of memory, in this case, memory + swap
 would be 2*300M, so processes can use 300M swap memory as well.
 
 ```console
-$ docker run -it -m 300M --memory-swap 1G ubuntu:22.04 /bin/bash
+$ docker run -it -m 300M --memory-swap 1G ubuntu:24.04 /bin/bash
 ```
 
 We set both memory and swap memory, so the processes in the container can use
@@ -450,7 +449,7 @@ The following example limits the memory (`-m`) to 500M and sets the memory
 reservation to 200M.
 
 ```console
-$ docker run -it -m 500M --memory-reservation 200M ubuntu:22.04 /bin/bash
+$ docker run -it -m 500M --memory-reservation 200M ubuntu:24.04 /bin/bash
 ```
 
 Under this configuration, when the container consumes memory more than 200M and
@@ -460,7 +459,7 @@ memory below 200M.
 The following example set memory reservation to 1G without a hard memory limit.
 
 ```console
-$ docker run -it --memory-reservation 1G ubuntu:22.04 /bin/bash
+$ docker run -it --memory-reservation 1G ubuntu:24.04 /bin/bash
 ```
 
 The container can use as much memory as it needs. The memory reservation setting
@@ -478,13 +477,13 @@ The following example limits the memory to 100M and disables the OOM killer for
 this container:
 
 ```console
-$ docker run -it -m 100M --oom-kill-disable ubuntu:22.04 /bin/bash
+$ docker run -it -m 100M --oom-kill-disable ubuntu:24.04 /bin/bash
 ```
 
 The following example, illustrates a dangerous way to use the flag:
 
 ```console
-$ docker run -it --oom-kill-disable ubuntu:22.04 /bin/bash
+$ docker run -it --oom-kill-disable ubuntu:24.04 /bin/bash
 ```
 
 The container has unlimited memory which can cause the host to run out memory
@@ -554,14 +553,14 @@ limit and "K" the kernel limit. There are three possible ways to set limits:
 Examples:
 
 ```console
-$ docker run -it -m 500M --kernel-memory 50M ubuntu:22.04 /bin/bash
+$ docker run -it -m 500M --kernel-memory 50M ubuntu:24.04 /bin/bash
 ```
 
 We set memory and kernel memory, so the processes in the container can use
 500M memory in total, in this 500M memory, it can be 50M kernel memory tops.
 
 ```console
-$ docker run -it --kernel-memory 50M ubuntu:22.04 /bin/bash
+$ docker run -it --kernel-memory 50M ubuntu:24.04 /bin/bash
 ```
 
 We set kernel memory without **-m**, so the processes in the container can
@@ -578,7 +577,7 @@ between 0 and 100. A value of 0 turns off anonymous page swapping. A value of
 For example, you can set:
 
 ```console
-$ docker run -it --memory-swappiness=0 ubuntu:22.04 /bin/bash
+$ docker run -it --memory-swappiness=0 ubuntu:24.04 /bin/bash
 ```
 
 Setting the `--memory-swappiness` option is helpful when you want to retain the
@@ -629,7 +628,7 @@ And usually `--cpu-period` should work with `--cpu-quota`.
 Examples:
 
 ```console
-$ docker run -it --cpu-period=50000 --cpu-quota=25000 ubuntu:22.04 /bin/bash
+$ docker run -it --cpu-period=50000 --cpu-quota=25000 ubuntu:24.04 /bin/bash
 ```
 
 If there is 1 CPU, this means the container can get 50% CPU worth of run-time every 50ms.
@@ -650,13 +649,13 @@ We can set cpus in which to allow execution for containers.
 Examples:
 
 ```console
-$ docker run -it --cpuset-cpus="1,3" ubuntu:22.04 /bin/bash
+$ docker run -it --cpuset-cpus="1,3" ubuntu:24.04 /bin/bash
 ```
 
 This means processes in container can be executed on cpu 1 and cpu 3.
 
 ```console
-$ docker run -it --cpuset-cpus="0-2" ubuntu:22.04 /bin/bash
+$ docker run -it --cpuset-cpus="0-2" ubuntu:24.04 /bin/bash
 ```
 
 This means processes in container can be executed on cpu 0, cpu 1 and cpu 2.
@@ -667,14 +666,14 @@ on NUMA systems.
 Examples:
 
 ```console
-$ docker run -it --cpuset-mems="1,3" ubuntu:22.04 /bin/bash
+$ docker run -it --cpuset-mems="1,3" ubuntu:24.04 /bin/bash
 ```
 
 This example restricts the processes in the container to only use memory from
 memory nodes 1 and 3.
 
 ```console
-$ docker run -it --cpuset-mems="0-2" ubuntu:22.04 /bin/bash
+$ docker run -it --cpuset-mems="0-2" ubuntu:24.04 /bin/bash
 ```
 
 This example restricts the processes in the container to only use memory from
@@ -696,8 +695,7 @@ By default, all containers get the same proportion of block IO bandwidth
 container's blkio weight relative to the weighting of all other running
 containers using the `--blkio-weight` flag.
 
-> **Note:**
->
+> [!NOTE]
 > The blkio weight setting is only available for direct IO. Buffered IO is not
 > currently supported.
 
@@ -706,8 +704,8 @@ For example, the commands below create two containers with different blkio
 weight:
 
 ```console
-$ docker run -it --name c1 --blkio-weight 300 ubuntu:22.04 /bin/bash
-$ docker run -it --name c2 --blkio-weight 600 ubuntu:22.04 /bin/bash
+$ docker run -it --name c1 --blkio-weight 300 ubuntu:24.04 /bin/bash
+$ docker run -it --name c2 --blkio-weight 600 ubuntu:24.04 /bin/bash
 ```
 
 If you do block IO in the two containers at the same time, by, for example:
@@ -767,7 +765,7 @@ For example, this command creates a container and limits the read rate to
 `1000` IO per second from `/dev/sda`:
 
 ```console
-$ docker run -ti --device-read-iops /dev/sda:1000 ubuntu
+$ docker run -it --device-read-iops /dev/sda:1000 ubuntu
 ```
 
 The `--device-write-iops` flag limits write rate (IO per second) to a device.
@@ -775,7 +773,7 @@ For example, this command creates a container and limits the write rate to
 `1000` IO per second to `/dev/sda`:
 
 ```console
-$ docker run -ti --device-write-iops /dev/sda:1000 ubuntu
+$ docker run -it --device-write-iops /dev/sda:1000 ubuntu
 ```
 
 Both flags take limits in the `<device-path>:<limit>` format. Both read and
@@ -813,11 +811,12 @@ by default a container is not allowed to access any devices, but a
 the documentation on [cgroups devices](https://www.kernel.org/doc/Documentation/cgroup-v1/devices.txt)).
 
 The `--privileged` flag gives all capabilities to the container. When the operator
-executes `docker run --privileged`, Docker will enable access to all devices on
-the host as well as set some configuration in AppArmor or SELinux to allow the
-container nearly all the same access to the host as processes running outside
-containers on the host. Additional information about running with `--privileged`
-is available on the [Docker Blog](https://www.docker.com/blog/docker-can-now-run-within-docker/).
+executes `docker run --privileged`, Docker enables access to all devices on
+the host, and reconfigures AppArmor or SELinux to allow the container
+nearly all the same access to the host as processes running outside
+containers on the host. Use this flag with caution.
+For more information about the `--privileged` flag, see the
+[`docker run` reference](https://docs.docker.com/reference/cli/docker/container/run/#privileged).
 
 If you want to limit access to a specific device or devices you can use
 the `--device` flag. It allows you to specify one or more devices that
@@ -922,11 +921,11 @@ For interacting with the network stack, instead of using `--privileged` they
 should use `--cap-add=NET_ADMIN` to modify the network interfaces.
 
 ```console
-$ docker run -it --rm  ubuntu:22.04 ip link add dummy0 type dummy
+$ docker run -it --rm  ubuntu:24.04 ip link add dummy0 type dummy
 
 RTNETLINK answers: Operation not permitted
 
-$ docker run -it --rm --cap-add=NET_ADMIN ubuntu:22.04 ip link add dummy0 type dummy
+$ docker run -it --rm --cap-add=NET_ADMIN ubuntu:24.04 ip link add dummy0 type dummy
 ```
 
 To mount a FUSE based filesystem, you need to combine both `--cap-add` and
@@ -966,7 +965,7 @@ use of facilities allowed by the capabilities, so you should not have to adjust 
 
 ## Overriding image defaults
 
-When you build an image from a [Dockerfile](https://docs.docker.com/engine/reference/builder/),
+When you build an image from a [Dockerfile](https://docs.docker.com/reference/dockerfile/),
 or when committing it, you can set a number of default parameters that take
 effect when the image starts up as a container. When you run an image, you can
 override those defaults using flags for the `docker run` command.
@@ -1038,8 +1037,7 @@ You can reset a containers entrypoint by passing an empty string, for example:
 $ docker run -it --entrypoint="" mysql bash
 ```
 
-> **Note**
->
+> [!NOTE]
 > Passing `--entrypoint` clears out any default command set on the image. That
 > is, any `CMD` instruction in the Dockerfile used to build it.
 
@@ -1089,7 +1087,7 @@ Additionally, you can set any environment variable in the container by using
 one or more `-e` flags. You can even override the variables mentioned above, or
 variables defined using a Dockerfile `ENV` instruction when building the image.
 
-If the you name an environment variable without specifying a value, the current
+If you name an environment variable without specifying a value, the current
 value of the named variable on the host is propagated into the container's
 environment:
 
@@ -1222,8 +1220,7 @@ The followings examples are all valid:
 --user=[ user | user:group | uid | uid:gid | user:gid | uid:group ]
 ```
 
-> **Note**
->
+> [!NOTE]
 > If you pass a numeric user ID, it must be in the range of 0-2147483647. If
 > you pass a username, the user must exist in the container.
 

@@ -849,7 +849,8 @@ options:
     - option: rm
       value_type: bool
       default_value: "false"
-      description: Automatically remove the container when it exits
+      description: |
+        Automatically remove the container and its associated anonymous volumes when it exits
       deprecated: false
       hidden: false
       experimental: false
@@ -953,6 +954,16 @@ options:
       experimentalcli: false
       kubernetes: false
       swarm: false
+    - option: use-api-socket
+      value_type: bool
+      default_value: "false"
+      description: Bind mount Docker API socket and required auth
+      deprecated: false
+      hidden: false
+      experimental: false
+      experimentalcli: true
+      kubernetes: false
+      swarm: false
     - option: user
       shorthand: u
       value_type: string
@@ -1020,6 +1031,7 @@ options:
       kubernetes: false
       swarm: false
 deprecated: false
+hidden: false
 experimental: false
 experimentalcli: false
 kubernetes: false

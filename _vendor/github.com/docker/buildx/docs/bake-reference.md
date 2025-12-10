@@ -1,4 +1,6 @@
-# Bake file reference
+---
+title: Bake file reference
+---
 
 The Bake file is a file for defining workflows that you run using `docker buildx bake`.
 
@@ -17,8 +19,8 @@ By default, Bake uses the following lookup order to find the configuration file:
 3. `docker-compose.yml`
 4. `docker-compose.yaml`
 5. `docker-bake.json`
-6. `docker-bake.override.json`
-7. `docker-bake.hcl`
+6. `docker-bake.hcl`
+7. `docker-bake.override.json`
 8. `docker-bake.override.hcl`
 
 You can specify the file location explicitly using the `--file` flag:
@@ -213,16 +215,20 @@ target "webapp" {
 The following table shows the complete list of attributes that you can assign to a target:
 
 | Name                                            | Type    | Description                                                          |
-| ----------------------------------------------- | ------- | -------------------------------------------------------------------- |
+|-------------------------------------------------|---------|----------------------------------------------------------------------|
 | [`args`](#targetargs)                           | Map     | Build arguments                                                      |
 | [`annotations`](#targetannotations)             | List    | Exporter annotations                                                 |
 | [`attest`](#targetattest)                       | List    | Build attestations                                                   |
 | [`cache-from`](#targetcache-from)               | List    | External cache sources                                               |
 | [`cache-to`](#targetcache-to)                   | List    | External cache destinations                                          |
+| [`call`](#targetcall)                           | String  | Specify the frontend method to call for the target.                  |
 | [`context`](#targetcontext)                     | String  | Set of files located in the specified path or URL                    |
 | [`contexts`](#targetcontexts)                   | Map     | Additional build contexts                                            |
+| [`description`](#targetdescription)             | String  | Description of a target                                              |
 | [`dockerfile-inline`](#targetdockerfile-inline) | String  | Inline Dockerfile string                                             |
 | [`dockerfile`](#targetdockerfile)               | String  | Dockerfile location                                                  |
+| [`entitlements`](#targetentitlements)           | List    | Permissions that the build process requires to run                   |
+| [`extra-hosts`](#targetextra-hosts)             | List    | Customs host-to-IP mapping                                           |
 | [`inherits`](#targetinherits)                   | List    | Inherit attributes from other targets                                |
 | [`labels`](#targetlabels)                       | Map     | Metadata for images                                                  |
 | [`matrix`](#targetmatrix)                       | Map     | Define a set of variables that forks a target into multiple targets. |
@@ -233,9 +239,11 @@ The following table shows the complete list of attributes that you can assign to
 | [`platforms`](#targetplatforms)                 | List    | Target platforms                                                     |
 | [`pull`](#targetpull)                           | Boolean | Always pull images                                                   |
 | [`secret`](#targetsecret)                       | List    | Secrets to expose to the build                                       |
+| [`shm-size`](#targetshm-size)                   | List    | Size of `/dev/shm`                                                   |
 | [`ssh`](#targetssh)                             | List    | SSH agent sockets or keys to expose to the build                     |
 | [`tags`](#targettags)                           | List    | Image names and tags                                                 |
 | [`target`](#targettarget)                       | String  | Target build stage                                                   |
+| [`ulimits`](#targetulimits)                     | List    | Ulimit options                                                       |
 
 ### `target.args`
 
@@ -279,16 +287,8 @@ The key takes a list of annotations, in the format of `KEY=VALUE`.
 
 ```hcl
 target "default" {
-  output = ["type=image,name=foo"]
+  output = [{ type = "image", name = "foo" }]
   annotations = ["org.opencontainers.image.authors=dvdksn"]
-}
-```
-
-is the same as
-
-```hcl
-target "default" {
-  output = ["type=image,name=foo,annotation.org.opencontainers.image.authors=dvdksn"]
 }
 ```
 
@@ -299,7 +299,12 @@ example adds annotations to both the image index and manifests.
 
 ```hcl
 target "default" {
-  output = ["type=image,name=foo"]
+  output = [
+    {
+      type = "image"
+      name = "foo"
+    }
+  ]
   annotations = ["index,manifest:org.opencontainers.image.authors=dvdksn"]
 }
 ```
@@ -315,8 +320,13 @@ This attribute accepts the long-form CSV version of attestation parameters.
 ```hcl
 target "default" {
   attest = [
-    "type=provenance,mode=min",
-    "type=sbom"
+    {
+      type = "provenance"
+      mode = "max"
+    },
+    {
+      type = "sbom"
+    }
   ]
 }
 ```
@@ -332,8 +342,15 @@ This takes a list value, so you can specify multiple cache sources.
 ```hcl
 target "app" {
   cache-from = [
-    "type=s3,region=eu-west-1,bucket=mybucket",
-    "user/repo:cache",
+    {
+      type = "s3"
+      region = "eu-west-1"
+      bucket = "mybucket"
+    },
+    {
+      type = "registry"
+      ref = "user/repo:cache"
+    }
   ]
 }
 ```
@@ -349,11 +366,39 @@ This takes a list value, so you can specify multiple cache export targets.
 ```hcl
 target "app" {
   cache-to = [
-    "type=s3,region=eu-west-1,bucket=mybucket",
-    "type=inline"
+    {
+      type = "s3"
+      region = "eu-west-1"
+      bucket = "mybucket"
+    },
+    {
+      type = "inline"
+    }
   ]
 }
 ```
+
+### `target.call`
+
+Specifies the frontend method to use. Frontend methods let you, for example,
+execute build checks only, instead of running a build. This is the same as the
+`--call` flag.
+
+```hcl
+target "app" {
+  call = "check"
+}
+```
+
+Supported values are:
+
+- `build` builds the target (default)
+- `check`: evaluates [build checks](https://docs.docker.com/build/checks/) for the target
+- `outline`: displays the target's build arguments and their default values if available
+- `targets`: lists all Bake targets in the loaded definition, along with its [description](#targetdescription).
+
+For more information about frontend methods, refer to the CLI reference for
+[`docker buildx build --call`](https://docs.docker.com/reference/cli/docker/buildx/build/#call).
 
 ### `target.context`
 
@@ -407,9 +452,9 @@ a context based on the pattern of the context value.
 ```hcl
 # docker-bake.hcl
 target "app" {
-    contexts = {
-        alpine = "docker-image://alpine:3.13"
-    }
+  contexts = {
+    alpine = "docker-image://alpine:3.13"
+  }
 }
 ```
 
@@ -424,9 +469,9 @@ RUN echo "Hello world"
 ```hcl
 # docker-bake.hcl
 target "app" {
-    contexts = {
-        src = "../path/to/source"
-    }
+  contexts = {
+    src = "../path/to/source"
+  }
 }
 ```
 
@@ -439,8 +484,7 @@ COPY --from=src . .
 
 #### Use another target as base
 
-> **Note**
->
+> [!NOTE]
 > You should prefer to use regular multi-stage builds over this option. You can
 > Use this feature when you have multiple Dockerfiles that can't be easily
 > merged into one.
@@ -448,12 +492,13 @@ COPY --from=src . .
 ```hcl
 # docker-bake.hcl
 target "base" {
-    dockerfile = "baseapp.Dockerfile"
+  dockerfile = "baseapp.Dockerfile"
 }
+
 target "app" {
-    contexts = {
-        baseapp = "target:base"
-    }
+  contexts = {
+    baseapp = "target:base"
+  }
 }
 ```
 
@@ -462,6 +507,25 @@ target "app" {
 FROM baseapp
 RUN echo "Hello world"
 ```
+
+### `target.description`
+
+Defines a human-readable description for the target, clarifying its purpose or
+functionality.
+
+```hcl
+target "lint" {
+  description = "Runs golangci-lint to detect style errors"
+  args = {
+    GOLANGCI_LINT_VERSION = null
+  }
+  dockerfile = "lint.Dockerfile"
+}
+```
+
+This attribute is useful when combined with the `docker buildx bake --list=targets`
+option, providing a more informative output when listing the available build
+targets in a Bake file.
 
 ### `target.dockerfile-inline`
 
@@ -498,6 +562,39 @@ $ docker buildx bake --print -f - <<< 'target "default" {}'
       "context": ".",
       "dockerfile": "Dockerfile"
     }
+  }
+}
+```
+
+### `target.entitlements`
+
+Entitlements are permissions that the build process requires to run.
+
+Currently supported entitlements are:
+
+- `network.host`: Allows the build to use commands that access the host network. In Dockerfile, use [`RUN --network=host`](https://docs.docker.com/reference/dockerfile/#run---networkhost) to run a command with host network enabled.
+
+- `security.insecure`: Allows the build to run commands in privileged containers that are not limited by the default security sandbox. Such container may potentially access and modify system resources. In Dockerfile, use [`RUN --security=insecure`](https://docs.docker.com/reference/dockerfile/#run---security) to run a command in a privileged container.
+
+```hcl
+target "integration-tests" {
+  # this target requires privileged containers to run nested containers
+  entitlements = ["security.insecure"]
+}
+```
+
+Entitlements are enabled with a two-step process. First, a target must declare the entitlements it requires. Secondly, when invoking the `bake` command, the user must grant the entitlements by passing the `--allow` flag or confirming the entitlements when prompted in an interactive terminal. This is to ensure that the user is aware of the possibly insecure permissions they are granting to the build process.
+
+### `target.extra-hosts`
+
+Use the `extra-hosts` attribute to define customs host-to-IP mapping for the
+target. This has the same effect as passing a [`--add-host`][add-host] flag to
+the build command.
+
+```hcl
+target "default" {
+  extra-hosts = {
+    my_hostname = "8.8.8.8"
   }
 }
 ```
@@ -746,6 +843,27 @@ target "app" {
 }
 ```
 
+### `target.network`
+
+Specify the network mode for the whole build request. This will override the default network mode
+for all the `RUN` instructions in the Dockerfile. Accepted values are `default`, `host`, and `none`.
+
+Usually, a better approach to set the network mode for your build steps is to instead use `RUN --network=<value>`
+in your Dockerfile. This way, you can set the network mode for individual build steps and everyone building
+the Dockerfile gets consistent behavior without needing to pass additional flags to the build command.
+
+If you set network mode to `host` in your Bake file, you must also grant `network.host` entitlement when
+invoking the `bake` command. This is because `host` network mode requires elevated privileges and can be a security risk.
+You can pass `--allow=network.host` to the `docker buildx bake` command to grant the entitlement, or you can
+confirm the entitlement when prompted if you are using an interactive terminal.
+
+```hcl
+target "app" {
+  # make sure this build does not access internet
+  network = "none"
+}
+```
+
 ### `target.no-cache-filter`
 
 Don't use build cache for the specified stages.
@@ -765,7 +883,7 @@ This is the same as the `--no-cache` flag for `docker build`.
 
 ```hcl
 target "default" {
-  no-cache = 1
+  no-cache = true
 }
 ```
 
@@ -777,7 +895,7 @@ The following example configures the target to use a cache-only output,
 
 ```hcl
 target "default" {
-  output = ["type=cacheonly"]
+  output = [{ type = "cacheonly" }]
 }
 ```
 
@@ -801,7 +919,7 @@ The following example forces the builder to always pull all images referenced in
 
 ```hcl
 target "default" {
-  pull = "always"
+  pull = true
 }
 ```
 
@@ -817,8 +935,15 @@ variable "HOME" {
 
 target "default" {
   secret = [
-    "type=env,id=KUBECONFIG",
-    "type=file,id=aws,src=${HOME}/.aws/credentials"
+    {
+      type = "env"
+      id = "KUBECONFIG"
+    },
+    {
+      type = "file"
+      id = "aws"
+      src = "${HOME}/.aws/credentials"
+    }
   ]
 }
 ```
@@ -828,9 +953,31 @@ This lets you [mount the secret][run_mount_secret] in your Dockerfile.
 ```dockerfile
 RUN --mount=type=secret,id=aws,target=/root/.aws/credentials \
     aws cloudfront create-invalidation ...
-RUN --mount=type=secret,id=KUBECONFIG \
-    KUBECONFIG=$(cat /run/secrets/KUBECONFIG) helm upgrade --install
+RUN --mount=type=secret,id=KUBECONFIG,env=KUBECONFIG \
+    helm upgrade --install
 ```
+
+### `target.shm-size`
+
+Sets the size of the shared memory allocated for build containers when using
+`RUN` instructions.
+
+The format is `<number><unit>`. `number` must be greater than `0`. Unit is
+optional and can be `b` (bytes), `k` (kilobytes), `m` (megabytes), or `g`
+(gigabytes). If you omit the unit, the system uses bytes.
+
+This is the same as the `--shm-size` flag for `docker build`.
+
+```hcl
+target "default" {
+  shm-size = "128m"
+}
+```
+
+> [!NOTE]
+> In most cases, it is recommended to let the builder automatically determine
+> the appropriate configurations. Manual adjustments should only be considered
+> when specific performance tuning is required for complex build scenarios.
 
 ### `target.ssh`
 
@@ -840,7 +987,7 @@ This can be useful if you need to access private repositories during a build.
 
 ```hcl
 target "default" {
-  ssh = ["default"]
+  ssh = [{ id = "default" }]
 }
 ```
 
@@ -877,6 +1024,30 @@ target "default" {
   target = "binaries"
 }
 ```
+
+### `target.ulimits`
+
+Ulimits overrides the default ulimits of build's containers when using `RUN`
+instructions and are specified with a soft and hard limit as such:
+`<type>=<soft limit>[:<hard limit>]`, for example:
+
+```hcl
+target "app" {
+  ulimits = [
+    "nofile=1024:1024"
+  ]
+}
+```
+
+> [!NOTE]
+> If you do not provide a `hard limit`, the `soft limit` is used
+> for both values. If no `ulimits` are set, they are inherited from
+> the default `ulimits` set on the daemon.
+
+> [!NOTE]
+> In most cases, it is recommended to let the builder automatically determine
+> the appropriate configurations. Manual adjustments should only be considered
+> when specific performance tuning is required for complex build scenarios.
 
 ## Group
 
@@ -926,7 +1097,9 @@ or interpolate them in attribute values in your Bake file.
 
 ```hcl
 variable "TAG" {
+  type = string
   default = "latest"
+  description = "Tag to use for build"
 }
 
 target "webapp-dev" {
@@ -939,12 +1112,214 @@ You can assign a default value for a variable in the Bake file,
 or assign a `null` value to it. If you assign a `null` value,
 Buildx uses the default value from the Dockerfile instead.
 
+You can also add a description of the variable's purpose with the `description` field. This attribute is useful when combined with the `docker buildx bake --list=variables` option, providing a more informative output when listing the available variables in a Bake file.
+
 You can override variable defaults set in the Bake file using environment variables.
 The following example sets the `TAG` variable to `dev`,
 overriding the default `latest` value shown in the previous example.
 
 ```console
 $ TAG=dev docker buildx bake webapp-dev
+```
+
+Variables can also be assigned an explicit type.
+If provided, it will be used to validate the default value (if set), as well as any overrides.
+This is particularly useful when using complex types which are intended to be overridden.
+The previous example could be expanded to apply an arbitrary series of tags.
+```hcl
+variable "TAGS" {
+  default = ["latest"]
+  type = list(string)
+}
+
+target "webapp-dev" {
+  dockerfile = "Dockerfile.webapp"
+  tags = [for tag in TAGS: "docker.io/username/webapp:${tag}"]
+}
+```
+
+This example shows how to generate three tags without changing the file
+or using custom functions/parsing:
+```console
+$ TAGS=dev,latest,2 docker buildx bake webapp-dev
+```
+
+### Variable typing
+
+The following primitive types are available:
+* `string`
+* `number`
+* `bool`
+
+The type is expressed like a keyword; it must be expressed as a literal:
+```hcl
+variable "OK" {
+  type = string
+}
+
+# cannot be an actual string
+variable "BAD" {
+  type = "string"
+}
+
+# cannot be the result of an expression
+variable "ALSO_BAD" {
+  type = lower("string")
+}
+```
+Specifying primitive types can be valuable to show intent (especially when a default is not provided),
+but bake will generally behave as expected without explicit typing.
+
+Complex types are expressed with "type constructors"; they are:
+* `tuple([<type>,...])`
+* `list(<type>)`
+* `set(<type>)`
+* `map(<type>)`
+* `object({<attr>=<type>},...})`
+
+The following are examples of each of those, as well as how the (optional) default value would be expressed:
+```hcl
+# structured way to express "1.2.3-alpha"
+variable "MY_VERSION" {
+  type = tuple([number, number, number, string])
+  default = [1, 2, 3, "alpha"]
+}
+
+# JDK versions used in a matrix build
+variable "JDK_VERSIONS" {
+  type = list(number)
+  default = [11, 17, 21]
+}
+
+# better way to express the previous example; this will also
+# enforce set semantics and allow use of set-based functions
+variable "JDK_VERSIONS" {
+  type = set(number)
+  default = [11, 17, 21]
+}
+
+# with the help of lookup(), translate a 'feature' to a tag
+variable "FEATURE_TO_NAME" {
+  type = map(string)
+  default = {featureA = "slim", featureB = "tiny"}
+}
+
+# map a branch name to a registry location
+variable "PUSH_DESTINATION" {
+  type = object({branch = string, registry = string})
+  default = {branch = "main", registry = "prod-registry.invalid.com"}
+}
+
+# make the previous example more useful with composition
+variable "PUSH_DESTINATIONS" {
+  type = list(object({branch = string, registry = string}))
+  default = [
+    {branch = "develop", registry = "test-registry.invalid.com"},
+    {branch = "main", registry = "prod-registry.invalid.com"},
+  ]
+}
+```
+Note that in each example, the default value would be valid even if typing was not present.
+If typing was omitted, the first three would all be considered `tuple`;
+you would be restricted to functions that operate on `tuple` and, for example, not be able to add elements.
+Similarly, the third and fourth would both be considered `object`, with the limits and semantics of that type.
+In short, in the absence of a type, any value delimited with `[]` is a `tuple`
+and value delimited with `{}` is an `object`.
+Explicit typing for complex types not only opens up the ability to use functions applicable to that specialized type,
+but is also a precondition for providing overrides.
+
+> [!NOTE]
+> See [HCL Type Expressions][typeexpr] page for more details.
+
+### Overriding variables
+
+As mentioned in the [intro to variables](#variable), primitive types (`string`, `number`, and `bool`)
+can be overridden without typing and will generally behave as expected.
+(When explicit typing is not provided, a variable is assumed to be primitive when the default value lacks `{}` or `[]` delimiters;
+a variable with neither typing nor a default value is treated as `string`.)
+Naturally, these same overrides can be used alongside explicit typing too;
+they may help in edge cases where you want `VAR=true` to be a `string`, where without typing,
+it may be a `string` or a `bool` depending on how/where it's used.
+Overriding a variable with a complex type can only be done when the type is provided.
+This is still done via environment variables, but the values can be provided via CSV or JSON.
+
+#### CSV overrides
+
+This is considered the canonical method and is well suited to interactive usage.
+It is assumed that `list` and `set` will be the most common complex type,
+as well as the most common complex type designed to be overridden.
+Thus, there is full CSV support for `list` and `set`
+(and `tuple`; despite being considered a structural type, it is more like a collection type in this regard).
+
+
+There is limited support for `map` and `object` and no support for composite types;
+for these advanced cases, an alternative mechanism [using JSON](#json-overrides) is available.
+
+#### JSON overrides
+
+Overrides can also be provided via JSON.
+This is the only method available for providing some complex types and may be convenient if overrides are already JSON
+(for example, if they come from a JSON API).
+It can also be used when dealing with values are difficult or impossible to specify using CSV (e.g., values containing quotes or commas).
+To use JSON, simply append `_JSON` to the variable name.
+In this contrived example, CSV cannot handle the second value; despite being a supported CSV type, JSON must be used:
+```hcl
+variable "VALS" {
+  type = list(string)
+  default = ["some", "list"]
+}
+```
+```console
+$ cat data.json
+["hello","with,comma","with\"quote"]
+$ VALS_JSON=$(< data.json) docker buildx bake
+
+# CSV equivalent, though the second value cannot be expressed at all 
+$ VALS='hello,"with""quote"' docker buildx bake
+```
+
+This example illustrates some precedence and usage rules:
+```hcl
+variable "FOO" {
+  type = string
+  default = "foo"
+}
+
+variable "FOO_JSON" {
+  type = string
+  default = "foo"
+}
+```
+
+The variable `FOO` can *only* be overridden using CSV because `FOO_JSON`, which would typically used for a JSON override,
+is already a defined variable.
+Since `FOO_JSON` is an actual variable, setting that environment variable would be expected to a CSV value.
+A JSON override *is* possible for this variable, using environment variable `FOO_JSON_JSON`.
+
+```Console
+# These three are all equivalent, setting variable FOO=bar
+$ FOO=bar docker buildx bake <...>
+$ FOO='bar' docker buildx bake <...>
+$ FOO="bar" docker buildx bake <...>
+
+# Sets *only* variable FOO_JSON; FOO is untouched
+$ FOO_JSON=bar docker buildx bake <...>
+
+# This also sets FOO_JSON, but will fail due to not being valid JSON
+$ FOO_JSON_JSON=bar docker buildx bake <...>
+
+# These are all equivalent
+$ cat data.json
+"bar"
+$ FOO_JSON_JSON=$(< data.json) docker buildx bake <...>
+$ FOO_JSON_JSON='"bar"' docker buildx bake <...>
+$ FOO_JSON=bar docker buildx bake <...>
+
+# This results in setting two different variables, both specified as CSV (FOO=bar and FOO_JSON="baz")
+$ FOO=bar FOO_JSON='"baz"' docker buildx bake <...>
+
+# These refer to the same variable with FOO_JSON_JSON having precedence and read as JSON (FOO_JSON=baz)
+$ FOO_JSON=bar FOO_JSON_JSON='"baz"' docker buildx bake <...>
 ```
 
 ### Built-in variables
@@ -1027,8 +1402,7 @@ $ docker buildx bake
 
 ## Function
 
-A [set of general-purpose functions][bake_stdlib]
-provided by [go-cty][go-cty]
+A [set of general-purpose functions][bake_stdlib] provided by [go-cty][go-cty]
 are available for use in HCL files:
 
 ```hcl
@@ -1061,28 +1435,29 @@ target "webapp-dev" {
 }
 ```
 
-> **Note**
->
+> [!NOTE]
 > See [User defined HCL functions][hcl-funcs] page for more details.
 
 <!-- external links -->
 
+[add-host]: https://docs.docker.com/reference/cli/docker/buildx/build/#add-host
 [attestations]: https://docs.docker.com/build/attestations/
-[bake_stdlib]: https://github.com/docker/buildx/blob/master/bake/hclparser/stdlib.go
-[build-arg]: https://docs.docker.com/engine/reference/commandline/image_build/#build-arg
-[build-context]: https://docs.docker.com/engine/reference/commandline/buildx_build/#build-context
+[bake_stdlib]: https://github.com/docker/buildx/blob/master/docs/bake-stdlib.md
+[build-arg]: https://docs.docker.com/reference/cli/docker/image/build/#build-arg
+[build-context]: https://docs.docker.com/reference/cli/docker/buildx/build/#build-context
 [cache-backends]: https://docs.docker.com/build/cache/backends/
-[cache-from]: https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-from
-[cache-to]: https://docs.docker.com/engine/reference/commandline/buildx_build/#cache-to
-[context]: https://docs.docker.com/engine/reference/commandline/buildx_build/#build-context
-[file]: https://docs.docker.com/engine/reference/commandline/image_build/#file
+[cache-from]: https://docs.docker.com/reference/cli/docker/buildx/build/#cache-from
+[cache-to]: https://docs.docker.com/reference/cli/docker/buildx/build/#cache-to
+[context]: https://docs.docker.com/reference/cli/docker/buildx/build/#build-context
+[file]: https://docs.docker.com/reference/cli/docker/image/build/#file
 [go-cty]: https://github.com/zclconf/go-cty/tree/main/cty/function/stdlib
 [hcl-funcs]: https://docs.docker.com/build/bake/hcl-funcs/
-[output]: https://docs.docker.com/engine/reference/commandline/buildx_build/#output
-[platform]: https://docs.docker.com/engine/reference/commandline/buildx_build/#platform
-[run_mount_secret]: https://docs.docker.com/engine/reference/builder/#run---mounttypesecret
-[secret]: https://docs.docker.com/engine/reference/commandline/buildx_build/#secret
-[ssh]: https://docs.docker.com/engine/reference/commandline/buildx_build/#ssh
-[tag]: https://docs.docker.com/engine/reference/commandline/image_build/#tag
-[target]: https://docs.docker.com/engine/reference/commandline/image_build/#target
+[output]: https://docs.docker.com/reference/cli/docker/buildx/build/#output
+[platform]: https://docs.docker.com/reference/cli/docker/buildx/build/#platform
+[run_mount_secret]: https://docs.docker.com/reference/dockerfile/#run---mounttypesecret
+[secret]: https://docs.docker.com/reference/cli/docker/buildx/build/#secret
+[ssh]: https://docs.docker.com/reference/cli/docker/buildx/build/#ssh
+[tag]: https://docs.docker.com/reference/cli/docker/image/build/#tag
+[target]: https://docs.docker.com/reference/cli/docker/image/build/#target
+[typeexpr]: https://github.com/hashicorp/hcl/tree/main/ext/typeexpr
 [userfunc]: https://github.com/hashicorp/hcl/tree/main/ext/userfunc

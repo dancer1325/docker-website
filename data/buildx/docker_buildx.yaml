@@ -1,14 +1,18 @@
 command: docker buildx
 short: Docker Buildx
 long: Extended build capabilities with BuildKit
+usage: docker buildx
 pname: docker
 plink: docker.yaml
 cname:
     - docker buildx bake
     - docker buildx build
     - docker buildx create
+    - docker buildx dap
     - docker buildx debug
+    - docker buildx dial-stdio
     - docker buildx du
+    - docker buildx history
     - docker buildx imagetools
     - docker buildx inspect
     - docker buildx ls
@@ -21,8 +25,11 @@ clink:
     - docker_buildx_bake.yaml
     - docker_buildx_build.yaml
     - docker_buildx_create.yaml
+    - docker_buildx_dap.yaml
     - docker_buildx_debug.yaml
+    - docker_buildx_dial-stdio.yaml
     - docker_buildx_du.yaml
+    - docker_buildx_history.yaml
     - docker_buildx_imagetools.yaml
     - docker_buildx_inspect.yaml
     - docker_buildx_ls.yaml
@@ -36,6 +43,17 @@ options:
       value_type: string
       description: Override the configured builder instance
       details_url: '#builder'
+      deprecated: false
+      hidden: false
+      experimental: false
+      experimentalcli: false
+      kubernetes: false
+      swarm: false
+    - option: debug
+      shorthand: D
+      value_type: bool
+      default_value: "false"
+      description: Enable debug logging
       deprecated: false
       hidden: false
       experimental: false

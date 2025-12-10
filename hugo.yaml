@@ -4,9 +4,20 @@ refLinksErrorLevel: ERROR
 enableGitInfo: true
 disablePathToLower: true
 enableInlineShortcodes: true
-disableKinds:
-  - taxonomy
-  - term
+disableHugoGeneratorInject: true
+ignoreLogs:
+  - cascade-pattern-with-extension
+
+taxonomies:
+  tag: tags
+  language: languages
+
+# Remove the /manuals prefix for content in the manuals section
+permalinks:
+  page:
+    manuals: /:sections[1:]/:slugorfilename/
+  section:
+    manuals: /:sections[1:]/:slugorfilename/
 
 markup:
   tableOfContents:
@@ -18,30 +29,25 @@ markup:
     parser:
       wrapStandAloneImageWithinParagraph: false
       attribute:
+        # Allow setting attributes on block-level elements
         block: true
     renderer:
+      # Allow inline HTML
       unsafe: true
   highlight:
+    # Use custom CSS for syntax highlighting
     noClasses: false
 
-related:
-  includeNewer: true
-  indices:
-  - name: keywords
-    weight: 80
-  - name: fragmentrefs
-    applyFilter: false
-    type: fragments
-    weight: 80
-  threshold: 20
-  toLower: false
-
 build:
+  # Generate hugo_stats.json - Tailwind uses this to detect classes
   buildStats:
     enable: true
+    disableIDs: true
+    disableTags: true
+  # Ensure that CSS/assets changes trigger a dev server rebuild
   cachebusters:
-    - source: assets/watching/hugo_stats\.json
-      target: styles\.css
+    - source: assets/notwatching/hugo_stats\.json
+      target: css
     - source: (postcss|tailwind)\.config\.js
       target: css
     - source: assets/.*\.js
@@ -49,80 +55,104 @@ build:
     - source: (assets|layouts)/.*\.(.*)$
       target: "$2"
 
+# Additional output formats (e.g. custom JSON files)
 outputFormats:
+  # File containing all redirects, see: layouts/index.redirects.json
   redirects:
     baseName: redirects
     isPlainText: true
     mediaType: "application/json"
     notAlternative: true
-  robots:
-    baseName: robots
+  # Metadata file used by DD global search, see: layouts/index.metadata.json
+  metadata:
+    baseName: metadata
+    isPlainText: true
+    mediaType: "application/json"
+    notAlternative: true
+  # llms.txt
+  llms:
+    baseName: llms
     isPlainText: true
     mediaType: "text/plain"
     notAlternative: true
+    permalinkable: false
 
+# Enable custom output formats
+# (only generate the custom output files once)
 outputs:
   home:
     - html
     - redirects
+    - metadata
     - robots
-  term:
+    - llms
+  page:
     - html
-    - json
-
-taxonomies:
+    - markdown
+  section:
+    - html
+    - markdown
 
 languages:
   en:
     languageName: English
 
+# Site-wide parameters
+# Can be accessed in content with {{% param "param_name" %}}
+# Or in layouts/partials with site.Params.param_name
 params:
+  kapa:
+    id: ba5c2cbc-6535-4334-a72e-050f7a681c8a
   analytics:
     hotjar:
       prod: 3169877
       stage: 3218181
     google: GTM-WL2QLG5
-    onetrust: 8e0ebfd9-035d-4ec2-9b2f-a2de9c09f906
-  algolia:
-    appid: 3XRLW0LZH9
-    apikey: 2899036ce47dba191b8dc1758e4bc6a4
-    indexname: docker
+    onetrust: 65425fb0-7b36-4317-9f10-7b3e08039af0
+    vwo: 723167
 
+  # Docs repository URL
   repo: https://github.com/docker/docs
-  docs_url: https://docs.docker.com
 
-  latest_engine_api_version: "1.44"
-  docker_ce_version: "25.0.0"
-  compose_version: "v2.24.5"
-  compose_file_v3: "3.8"
-  compose_file_v2: "2.4"
-  buildkit_version: "0.12.3"
+  # === Example versions ===
+  # The following parameters are used in various ways in content and templates.
+  # Mostly as examples in code snippets, but also in other exotic ways.
+  # Use `grep` to figure out how they might be used.
 
-  example_go_version: "1.21"
-  example_golangci_lint_version: "v1.52"
-  example_alpine_version: "1.19"
+  # Latest version of the Docker Engine API
+  latest_engine_api_version: "1.52"
+  # Latest version of Docker Engine
+  docker_ce_version: "29.1.2"
+  # Previous version of the Docker Engine
+  # (Used to show e.g., "latest" and "latest"-1 in engine install examples
+  docker_ce_version_prev: "29.1.1"
+  # Latest Docker Compose version
+  compose_version: "v5.0.0"
+  # Latest BuildKit version
+  buildkit_version: "0.26.0"
 
-  min_api_threshold: 1.41
-
+  # Example runtime/library/os versions
+  example_go_version: "1.24"
+  example_alpine_version: "3.21"
+  example_node_version: "20"
 
 menus:
+  # Site header menu
   main:
-  - name: Guides
-    url: /get-started/overview/
+  - name: Get started
+    pageRef: /get-started/
     weight: 1
-  - name: Manuals
-    url: /manuals/
+  - name: Guides
+    pageRef: /guides/
     weight: 2
-  - name: Reference
-    url: /reference/
+  - name: Manuals
+    pageRef: /manuals/
     weight: 3
-  - name: Samples
-    url: /samples/
+  - name: Reference
+    pageRef: /reference/
     weight: 4
-  - name: FAQ
-    url: /faq/
-    weight: 5
 
+  # Footer links
   footer:
     - url: https://www.docker.com/products
       name: Product offerings
@@ -222,70 +252,100 @@ menus:
       name: Newsletter
       parent: About us
 
+# Hugo modules - for fetching docs from upstream repos
+# NOTE: we always vendor upstream docs in _vendor/
+# Versions are declared in go.mod
 module:
   proxy: https://proxy.golang.org,direct
   hugoVersion:
     extended: false
-    min: "0.116.1"
+    min: "0.141.0"
   mounts:
+    # Mount the assets directory so it doesn't get overwritten
     - source: assets
       target: assets
-    - source: hugo_stats.json
-      target: assets/watching/hugo_stats.json
+    # Mount hugo_stats.json to the assets dir to trigger cachebust
+    - disableWatch: true
+      source: hugo_stats.json
+      target: assets/notwatching/hugo_stats.json
+    # Mount the icon files to assets so we can access them with resources.Get
     - source: node_modules/@material-symbols/svg-400/rounded
       target: assets/icons
 
   imports:
 
-    - path: github.com/moby/moby
+    # Docker Engine API
+    - path: github.com/moby/moby/api
       mounts:
-        - source: docs/api
-          target: content/engine/api
-          includeFiles: "*.md"
-        - source: docs/api
-          target: static/reference/engine
+        - source: docs/CHANGELOG.md
+          target: content/reference/api/engine/version-history.md
+        - source: docs
+          target: content/reference/api/engine/version
           includeFiles: "*.yaml"
 
+    # BuildKit
     - path: github.com/moby/buildkit
       mounts:
         - source: frontend/dockerfile/docs/reference.md
-          target: content/engine/reference/builder.md
+          target: content/reference/dockerfile.md
+        - source: frontend/dockerfile/docs/rules
+          target: content/reference/build-checks
+          includeFiles: "*.md"
         - source: docs/buildkitd.toml.md
-          target: content/build/buildkit/toml-configuration.md
+          target: content/manuals/build/buildkit/toml-configuration.md
         - source: docs/attestations/slsa-definitions.md
-          target: content/build/attestations/slsa-definitions.md
+          target: content/manuals/build/metadata/attestations/slsa-definitions.md
         - source: docs/attestations/attestation-storage.md
-          target: content/build/attestations/attestation-storage.md
+          target: content/manuals/build/metadata/attestations/attestation-storage.md
 
+    # Buildx CLI plugin
     - path: github.com/docker/buildx
       mounts:
         - source: docs/bake-reference.md
-          target: content/build/bake/reference.md
+          target: content/manuals/build/bake/reference.md
+        - source: docs/bake-stdlib.md
+          target: content/manuals/build/bake/stdlib.md
 
-    - path: github.com/docker/scout-cli
-      mounts:
-        - source: docs
-          includeFiles: "*.yaml"
-          target: data/scout-cli
-
+    # Docker CLI
     - path: github.com/docker/cli
       mounts:
         - source: docs/extend
-          target: content/engine/extend
-          excludefiles: "index.md"
-        - source: docs/extend/index.md
-          target: content/engine/extend/_index.md
+          target: content/manuals/engine/extend
+          excludeFiles:
+            - "EBS_volume.md"
+            - "plugins_metrics.md"
+            - "plugins_services.md"
         - source: docs/deprecated.md
-          target: content/engine/deprecated.md
+          target: content/manuals/engine/deprecated.md
         - source: docs/reference/run.md
-          target: content/engine/reference/run.md
-        - source: docs/reference/commandline/cli.md
-          target: content/engine/reference/commandline/cli.md
-        - source: docs/reference/commandline/dockerd.md
-          target: content/engine/reference/commandline/dockerd.md
+          target: content/manuals/engine/containers/run.md
+        - source: docs/reference/dockerd.md
+          target: content/reference/cli/dockerd.md
 
-    - path: github.com/docker/compose/v2
+    # Compose
+    - path: github.com/docker/compose/v5
       mounts:
         - source: docs/reference
           target: data/compose-cli
+          includeFiles: "*.yaml"
+
+    # Model CLI
+    - path: github.com/docker/model-runner/cmd/cli
+      mounts:
+        - source: docs/reference
+          target: data/model-cli
+          includeFiles: "*.yaml"
+
+    # MCP CLI
+    - path: github.com/docker/mcp-gateway
+      mounts:
+        - source: docs/generator/reference
+          target: data/mcp-cli
+          includeFiles: "*.yaml"
+
+    # Scout CLI plugin (public dist repo)
+    - path: github.com/docker/scout-cli
+      mounts:
+        - source: docs
+          target: data/scout-cli
           includeFiles: "*.yaml"

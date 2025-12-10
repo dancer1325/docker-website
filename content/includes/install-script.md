@@ -14,7 +14,6 @@ for the script is open source, and you can find it in the
 Always examine scripts downloaded from the internet before running them locally.
 Before installing, make yourself familiar with potential risks and limitations
 of the convenience script:
-{ .warning }
 
 - The script requires `root` or `sudo` privileges to run.
 - The script attempts to detect your Linux distribution and version and
@@ -31,9 +30,9 @@ of the convenience script:
   using the script to update an existing installation, dependencies may not be
   updated to the expected version, resulting in outdated versions.
 
-> **Tip: preview script steps before running**
+> [!TIP]
 >
-> You can run the script with the `--dry-run` option to learn what steps the
+> Preview script steps before running. You can run the script with the `--dry-run` option to learn what steps the
 > script will run when invoked:
 >
 > ```console
@@ -54,7 +53,7 @@ Executing docker install script, commit: 7cae5f8b0decc17d6571f9f52eb840fbc13b273
 
 You have now successfully installed and started Docker Engine. The `docker`
 service starts automatically on Debian based distributions. On `RPM` based
-distributions, such as CentOS, Fedora, RHEL or SLES, you need to start it
+distributions, such as CentOS, Fedora or RHEL, you need to start it
 manually using the appropriate `systemctl` or `service` command. As the message
 indicates, non-root users can't run Docker commands by default.
 

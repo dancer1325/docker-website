@@ -39,6 +39,7 @@ options:
       value_type: bool
       default_value: "false"
       description: Do not truncate the output
+      details_url: '#no-trunc'
       deprecated: false
       hidden: false
       experimental: false
@@ -78,6 +79,8 @@ examples: |-
     cf03ee007fb4        host                host            local
     78b03ee04fc4        multi-host          overlay         swarm
     ```
+
+    ### List networks without truncating the ID column (--no-trun) {#no-trunc}
 
     Use the `--no-trunc` option to display the full network id:
 
@@ -278,6 +281,7 @@ examples: |-
     {"CreatedAt":"2021-03-09 21:41:29.752212603 +0000 UTC","Driver":"null","ID":"9d096c122066","IPv6":"false","Internal":"false","Labels":"","Name":"none","Scope":"local"}
     ```
 deprecated: false
+hidden: false
 min_api_version: "1.21"
 experimental: false
 experimentalcli: false

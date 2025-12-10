@@ -10,14 +10,17 @@ long: |-
     * compose.yaml
     * README.Docker.md
     
-    If any of the files already exist, a prompt appears and provides a warning as well as giving you the option to overwrite all the files.
+    If any of the files already exist, a prompt appears and provides a warning
+    as well as giving you the option to overwrite all the files. If
+    `docker-compose.yaml` already exists instead of `compose.yaml`, `docker
+    init` can overwrite it, using `docker-compose.yaml` as the name for the
+    Compose file.
     
-    > **Warning**
+    > [!WARNING]
     >
     > You can't recover overwritten files.
     > To back up an existing file before selecting to overwrite it, rename the file or copy it to another directory.
-    { .warning }
-  
+
   After running `docker init`, you can choose one of the following templates:
     
     * ASP.NET Core: Suitable for an ASP.NET Core application.
@@ -31,9 +34,9 @@ long: |-
   
   After `docker init` has completed, you may need to modify the created files and tailor them to your project. Visit the following topics to learn more about the files:
     
-    * [.dockerignore](../../../engine/reference/builder.md#dockerignore-file)
-    * [Dockerfile](../../../engine/reference/builder.md)
-    * [compose.yaml](../../../compose/compose-application-model.md)
+    * [.dockerignore](/reference/dockerfile.md#dockerignore-file)
+    * [Dockerfile](/reference/dockerfile.md)
+    * [compose.yaml](/manuals/compose/intro/compose-application-model.md)
 
 usage: docker init [OPTIONS]
 pname: docker

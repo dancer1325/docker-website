@@ -3,6 +3,7 @@ title: Grammar and style
 description: Grammar and style guidelines for technical documentation
 keywords: grammar, style, contribute
 toc_max: 2
+weight: 10
 ---
 
 Docker documentation should always be written in US English with US grammar. 
@@ -68,6 +69,13 @@ Following our conversational approach, it's acceptable to use contractions in al
 - Stay consistent - don't switch between contractions and their spelled-out equivalents in body copy or UI text.
 - Avoid negative contractions (can't, don't, wouldn't, and shouldn't) whenever possible. Try to rewrite your sentence to align with our helpful approach that puts the focus on solutions, not problems.
 - Never contract a noun with is, does, has, or was as this can make it look like the noun is possessive. Your container is ready. Your container’s ready.
+
+## Dangling modifiers
+
+Avoid [dangling modifiers](https://en.wikipedia.org/wiki/Dangling_modifier), where the subject of a clause's verb is unclear:
+
+- ❌ After enabling auto-log-out, your users are logged out.
+- ✅ When you enable auto-log-out, your users are logged out.
 
 ## Dates
 
@@ -165,7 +173,3 @@ Avoid the use of exclamation marks.
 ### Parentheses
 
 Don't use parentheses in technical documentation. They can reduce the readability of a sentence.
-
-## Third party documentation
-
-If you are documenting a task that requires the use of a third-party product, link out to the third-party's documentation. Don't copy the content because it might violate copyright. It can also result in an unnecessary maintenance burden of having to keep the docs up-to-date when the third-party changes or updates their product. It is best practice to link to the single source of truth.

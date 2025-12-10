@@ -8,8 +8,7 @@ long: |-
     You can view or rotate the unlock key using `swarm unlock-key`. To view the key,
     run the `docker swarm unlock-key` command without any arguments:
 
-    > **Note**
-    >
+    > [!NOTE]
     > This is a cluster management command, and must be executed on a swarm
     > manager node. To learn about managers and workers, refer to the
     > [Swarm mode section](/engine/swarm/) in the
@@ -23,6 +22,7 @@ options:
       value_type: bool
       default_value: "false"
       description: Only display token
+      details_url: '#quiet'
       deprecated: false
       hidden: false
       experimental: false
@@ -33,6 +33,7 @@ options:
       value_type: bool
       default_value: "false"
       description: Rotate unlock key
+      details_url: '#rotate'
       deprecated: false
       hidden: false
       experimental: false
@@ -59,7 +60,7 @@ examples: |-
 
         SWMKEY-1-fySn8TY4w5lKcWcJPIpKufejh9hxx5KYwx6XZigx3Q4
 
-    Please remember to store this key in a password manager, since without it you
+    Remember to store this key in a password manager, since without it you
     will not be able to restart the manager.
     ```
 
@@ -76,7 +77,7 @@ examples: |-
 
         SWMKEY-1-7c37Cc8654o6p38HnroywCi19pllOnGtbdZEgtKxZu8
 
-    Please remember to store this key in a password manager, since without it you
+    Remember to store this key in a password manager, since without it you
     will not be able to restart the manager.
     ```
 
@@ -88,15 +89,16 @@ examples: |-
     SWMKEY-1-7c37Cc8654o6p38HnroywCi19pllOnGtbdZEgtKxZu8
     ```
 
-    ### `--rotate`
+    ### `--rotate` {#rotate}
 
     This flag rotates the unlock key, replacing it with a new randomly-generated
     key. The old unlock key will no longer be accepted.
 
-    ### `--quiet`
+    ### `--quiet` {#quiet}
 
     Only print the unlock key, without instructions.
 deprecated: false
+hidden: false
 min_api_version: "1.24"
 experimental: false
 experimentalcli: false

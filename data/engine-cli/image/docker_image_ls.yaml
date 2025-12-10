@@ -92,6 +92,17 @@ options:
       experimentalcli: false
       kubernetes: false
       swarm: false
+    - option: tree
+      value_type: bool
+      default_value: "false"
+      description: List multi-platform images as a tree (EXPERIMENTAL)
+      deprecated: false
+      hidden: false
+      min_api_version: "1.47"
+      experimental: false
+      experimentalcli: true
+      kubernetes: false
+      swarm: false
 inherited_options:
     - option: help
       value_type: bool
@@ -408,6 +419,7 @@ examples: |-
     {"Containers":"N/A","CreatedAt":"2021-02-17 22:19:54 +0100 CET","CreatedSince":"2 weeks ago","Digest":"\u003cnone\u003e","ID":"28f6e2705743","Repository":"alpine","SharedSize":"N/A","Size":"5.61MB","Tag":"latest","UniqueSize":"N/A","VirtualSize":"5.613MB"}
     ```
 deprecated: false
+hidden: false
 experimental: false
 experimentalcli: false
 kubernetes: false

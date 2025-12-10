@@ -1,17 +1,3 @@
-{{ define "left" }}
-  {{ partial "sidebar.html" . }}
-{{ end }}
-
 {{ define "main" }}
-  {{ partial "breadcrumbs.html" . }}
-  <article class="DocSearch-content prose max-w-none dark:prose-invert">
-    {{ with .Title }}
-    <h1 class="scroll-mt-36">{{ . }}</h1>
-    {{ end }}
-    {{ .Content }}
-  </article>
-{{ end }}
-
-{{ define "right" }}
-  {{ partial "aside.html" . }}
+  {{ partial "content-default.html" . }}
 {{ end }}

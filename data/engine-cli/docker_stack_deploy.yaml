@@ -4,8 +4,7 @@ short: Deploy a new stack or update an existing stack
 long: |-
     Create and update a stack from a `compose` file on the swarm.
 
-    > **Note**
-    >
+    > [!NOTE]
     > This is a cluster management command, and must be executed on a swarm
     > manager node. To learn about managers and workers, refer to the
     > [Swarm mode section](/engine/swarm/) in the
@@ -27,6 +26,18 @@ options:
       experimentalcli: false
       kubernetes: false
       swarm: false
+    - option: detach
+      shorthand: d
+      value_type: bool
+      default_value: "true"
+      description: |
+        Exit immediately instead of waiting for the stack services to converge
+      deprecated: false
+      hidden: false
+      experimental: false
+      experimentalcli: false
+      kubernetes: false
+      swarm: false
     - option: prune
       value_type: bool
       default_value: "false"
@@ -34,6 +45,17 @@ options:
       deprecated: false
       hidden: false
       min_api_version: "1.27"
+      experimental: false
+      experimentalcli: false
+      kubernetes: false
+      swarm: false
+    - option: quiet
+      shorthand: q
+      value_type: bool
+      default_value: "false"
+      description: Suppress progress output
+      deprecated: false
+      hidden: false
       experimental: false
       experimentalcli: false
       kubernetes: false
@@ -150,6 +172,7 @@ examples: |-
     axqh55ipl40h  vossibility_vossibility-collector  replicated  1/1       icecrime/vossibility-collector@sha256:f03f2977203ba6253988c18d04061c5ec7aab46bca9dfd89a9a1fa4500989fba
     ```
 deprecated: false
+hidden: false
 min_api_version: "1.25"
 experimental: false
 experimentalcli: false

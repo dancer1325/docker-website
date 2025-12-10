@@ -1,10 +1,13 @@
+.hugo_build.lock
+.idea/
+.vscode/mcp.json
+.vscode/settings.json
+.vscode/tasks.json
 **/.DS_Store
 **/desktop.ini
-.vscode
 node_modules
-hugo_stats.json
-.hugo_build.lock
-resources
 public
+resources
+static/pagefind
 tmp
 .idea

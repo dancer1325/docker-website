@@ -1,8 +1,13 @@
+{{- /*
+  Utility template to extract a description for the current page.
+  - Prioritizes `.Description` or falls back to front matter in `site.Data.frontmatter`.
+  - Replaces newlines with spaces and trims trailing spaces.
+  - Designed for reuse via `partial` calls to generate meta descriptions or similar content.
+*/ -}}
 {{ $desc := "" }}
 {{ if .Description }}
-  {{ $desc = .Description }}
+  {{ $desc = strings.Replace .Description "\n" " " }}
 {{ else }}
-  {{ $desc = .Summary }}
   {{ with .File }}
     {{ with (index (site.Data.frontmatter) .Path) }}
       {{ with .description }}

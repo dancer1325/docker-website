@@ -4,8 +4,7 @@ short: List services
 long: |-
     This command lists services that are running in the swarm.
 
-    > **Note**
-    >
+    > [!NOTE]
     > This is a cluster management command, and must be executed on a swarm
     > manager node. To learn about managers and workers, refer to the
     > [Swarm mode section](/engine/swarm/) in the
@@ -71,7 +70,7 @@ examples: |-
 
     ID            NAME      MODE            REPLICAS             IMAGE
     c8wgl7q4ndfd  frontend  replicated      5/5                  nginx:alpine
-    dmu1ept4cxcf  redis     replicated      3/3                  redis:3.0.6
+    dmu1ept4cxcf  redis     replicated      3/3                  redis:7.4.1
     iwe3278osahj  mongo     global          7/7                  mongo:3.3
     hh08h9uu8uwr  job       replicated-job  1/1 (3/5 completed)  nginx:latest
     ```
@@ -88,10 +87,10 @@ examples: |-
 
     The currently supported filters are:
 
-    * [id](service_ls.md#id)
-    * [label](service_ls.md#label)
-    * [mode](service_ls.md#mode)
-    * [name](service_ls.md#name)
+    * [id](/reference/cli/docker/service/ls/#id)
+    * [label](/reference/cli/docker/service/ls/#label)
+    * [mode](/reference/cli/docker/service/ls/#mode)
+    * [name](/reference/cli/docker/service/ls/#name)
 
     #### id
 
@@ -102,7 +101,7 @@ examples: |-
     ```console
     $ docker service ls -f "id=0bcjw"
     ID            NAME   MODE        REPLICAS  IMAGE
-    0bcjwfh8ychr  redis  replicated  1/1       redis:3.0.6
+    0bcjwfh8ychr  redis  replicated  1/1       redis:7.4.1
     ```
 
     #### label
@@ -118,7 +117,7 @@ examples: |-
     ID            NAME       MODE        REPLICAS  IMAGE
     01sl1rp6nj5u  frontend2  replicated  1/1       nginx:alpine
     36xvvwwauej0  frontend   replicated  5/5       nginx:alpine
-    74nzcxxjv6fq  backend    replicated  3/3       redis:3.0.6
+    74nzcxxjv6fq  backend    replicated  3/3       redis:7.4.1
     ```
 
     The following filter matches only services with the `project` label with the
@@ -128,7 +127,7 @@ examples: |-
     $ docker service ls --filter label=project=project-a
     ID            NAME      MODE        REPLICAS  IMAGE
     36xvvwwauej0  frontend  replicated  5/5       nginx:alpine
-    74nzcxxjv6fq  backend   replicated  3/3       redis:3.0.6
+    74nzcxxjv6fq  backend   replicated  3/3       redis:7.4.1
     ```
 
     #### mode
@@ -152,7 +151,7 @@ examples: |-
     ```console
     $ docker service ls --filter name=redis
     ID            NAME   MODE        REPLICAS  IMAGE
-    0bcjwfh8ychr  redis  replicated  1/1       redis:3.0.6
+    0bcjwfh8ychr  redis  replicated  1/1       redis:7.4.1
     ```
 
     ### Format the output (--format) {#format}
@@ -192,6 +191,7 @@ examples: |-
     {"ID":"ssniordqolsi","Image":"hello-world:latest","Mode":"replicated","Name":"hello","Ports":"","Replicas":"0/1"}
     ```
 deprecated: false
+hidden: false
 min_api_version: "1.24"
 experimental: false
 experimentalcli: false

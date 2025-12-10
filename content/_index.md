@@ -1,6 +1,6 @@
 ---
 title: Home
-description: Home page for Docker's documentation
+description: Docker Documentation is the official Docker library of resources, manuals, and guides to help you containerize applications.
 keywords: Docker, documentation, manual, guide, reference, api, samples
 grid:
   - title: Docker Desktop
@@ -14,6 +14,28 @@ grid:
         url: "/desktop/use-desktop/"
       - text: "Release notes"
         url: "/desktop/release-notes/"
+  - title: Docker Hardened Images
+    icon: /icons/dhi.svg
+    description: |
+      Secure, minimal images for trusted software delivery.
+    links:
+      - text: "Overview"
+        url: "/dhi/"
+      - text: "Quickstart"
+        url: "/dhi/get-started/"
+      - text: "Use an image"
+        url: "/dhi/how-to/use/"
+  - title: Docker MCP Catalog and Toolkit
+    icon: /icons/toolkit.svg
+    description: |
+      Augment your AI workflows with MCP servers.
+    links:
+      - text: "Overview"
+        url: "/ai/mcp-catalog-and-toolkit/"
+      - text: "Quickstart"
+        url: "/ai/mcp-catalog-and-toolkit/get-started/"
+      - text: "Explore the MCP Toolkit"
+        url: "/ai/mcp-catalog-and-toolkit/toolkit/"
   - title: Docker Engine
     icon: developer_board
     description: |
@@ -36,6 +58,17 @@ grid:
         url: "/build/building/packaging/"
       - text: "Release notes"
         url: "/build/release-notes/"
+  - title: Docker Build Cloud
+    icon: cloud
+    description: |
+      Run your builds in the cloud.
+    links:
+      - text: "Overview"
+        url: "/build-cloud/"
+      - text: "Setup"
+        url: "/build-cloud/setup/"
+      - text: "Release notes"
+        url: "/build-cloud/release-notes/"
   - title: Docker Compose
     icon: polyline
     description: |
@@ -46,7 +79,7 @@ grid:
       - text: "Try Docker Compose"
         url: "/compose/gettingstarted/"
       - text: "Release notes"
-        url: "/compose/release-notes/"
+        url: "/compose/releases/release-notes/"
   - title: Docker Hub
     icon: device_hub
     description: |
@@ -55,7 +88,7 @@ grid:
       - text: "Overview"
         url: "/docker-hub/"
       - text: "Create an account"
-        url: "/docker-id/"
+        url: "/accounts/create-account/"
       - text: "Create a repository"
         url: "/docker-hub/repos/create/"
   - title: Docker Scout
@@ -69,17 +102,6 @@ grid:
         url: "/scout/quickstart/"
       - text: "Image analysis"
         url: "/scout/image-analysis/"
-  - title: Trusted content
-    icon: verified
-    description: |
-      High-quality, secure images from Docker and verified partners.
-    links:
-      - text: "Overview"
-        url: "/trusted-content/"
-      - text: "Official images"
-        url: "/trusted-content/official-images/"
-      - text: "Verified publisher program"
-        url: "/trusted-content/dvp-program/"
   - title: Subscription
     icon: card_membership
     description: |
@@ -89,8 +111,8 @@ grid:
         url: "/subscription/"
       - text: "Subscriptions and features"
         url: "/subscription/details/"
-      - text: "Upgrade"
-        url: "/subscription/upgrade/"
+      - text: "Change subscription"
+        url: "/subscription/change/"
   - title: Billing
     icon: payments
     description: |
@@ -123,7 +145,29 @@ grid:
       - text: "SSO"
         url: "/security/for-admins/single-sign-on/"
       - text: "SCIM"
-        url: "/security/for-admins/scim/"
+        url: "/security/for-admins/provisioning/scim/"
+  - title: Testcontainers Cloud
+    icon: cloud
+    description: |
+      Testcontainers Cloud lets you run heavy test workloads remotely.
+    links:
+      - text: "Overview"
+        url: "https://testcontainers.com/cloud/docs/"
+      - text: "Getting started"
+        url: "https://testcontainers.com/cloud/docs/#getting-started"
+      - text: "TCC for CI"
+        url: "https://testcontainers.com/cloud/docs/#tcc-for-ci"
+  - title: Docker Offload
+    icon: cloud
+    description: |
+      Build and run containers in the cloud.
+    links:
+      - text: "Overview"
+        url: "/offload/"
+      - text: "Quickstart"
+        url: "/offload/quickstart/"
+      - text: "About Docker Offload"
+        url: "/offload/about/"
 ---
 
 * top navigation bar

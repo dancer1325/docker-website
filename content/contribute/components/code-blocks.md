@@ -13,7 +13,7 @@ we use often.
 If your example contains a placeholder value that's subject to change,
 use the format `<[A-Z_]+>` for the placeholder value: `<MY_VARIABLE>`
 
-```none
+```text
 export name=<MY_NAME>
 ```
 
@@ -50,13 +50,55 @@ incoming := map[string]interface{}{
 ```
 ````
 
+## Collapsible code blocks
+
+```dockerfile {collapse=true}
+# syntax=docker/dockerfile:1
+
+ARG GO_VERSION="1.21"
+
+FROM golang:${GO_VERSION}-alpine AS base
+ENV CGO_ENABLED=0
+ENV GOPRIVATE="github.com/foo/*"
+RUN apk add --no-cache file git rsync openssh-client
+RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+WORKDIR /src
+
+FROM base AS vendor
+# this step configure git and checks the ssh key is loaded
+RUN --mount=type=ssh <<EOT
+  set -e
+  echo "Setting Git SSH protocol"
+  git config --global url."git@github.com:".insteadOf "https://github.com/"
+  (
+    set +e
+    ssh -T git@github.com
+    if [ ! "$?" = "1" ]; then
+      echo "No GitHub SSH key loaded exiting..."
+      exit 1
+    fi
+  )
+EOT
+# this one download go modules
+RUN --mount=type=bind,target=. \
+    --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=ssh \
+    go mod download -x
+
+FROM vendor AS build
+RUN --mount=type=bind,target=. \
+    --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache \
+    go build ...
+```
+
 ## Bash
 
 Use the `bash` language code block when you want to show a Bash script:
 
 ```bash
 #!/usr/bin/bash
-echo "deb https://packages.docker.com/1.12/apt/repo ubuntu-trusty main" | sudo tee /etc/apt/sources.list.d/docker.list
+echo "deb https://download.docker.com/linux/ubuntu noble stable" | sudo tee /etc/apt/sources.list.d/docker.list
 ```
 
 If you want to show an interactive shell, use `console` instead.
@@ -64,7 +106,7 @@ In cases where you use `console`, make sure to add a dollar character
 for the user sign:
 
 ```console
-$ echo "deb https://packages.docker.com/1.12/apt/repo ubuntu-trusty main" | sudo tee /etc/apt/sources.list.d/docker.list
+$ echo "deb https://download.docker.com/linux/ubuntu noble stable" | sudo tee /etc/apt/sources.list.d/docker.list
 ```
 
 ## Go

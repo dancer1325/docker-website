@@ -1,6 +1,10 @@
 # Docs @ Docker
 
-<img src="static/assets/images/docker-docs.png" alt="Welcome to Docker Documentation" style="max-width: 50%;">
+<div align="center">
+<img src="static/assets/images/docker-docs.svg" alt="Welcome to Docker Documentation">
+</div>
+<br/>
+<br/>
 
 * [https://docs.docker.com/](https://docs.docker.com/) source code
 
@@ -14,4 +18,4 @@
 
 ## Copyright and license
 
-Copyright 2013-2023 Docker, Inc., released under the <a href="https://github.com/docker/docs/blob/main/LICENSE">Apache 2.0 license</a> .
+Copyright 2013-2025 Docker, Inc., released under the [Apache 2.0 license](https://github.com/docker/docs/blob/main/LICENSE).
