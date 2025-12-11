@@ -21,7 +21,7 @@ aliases:
 
 ## About this series
 
-In this guide series, you will gain hands-on experience with Docker, starting
+* In this guide series, you will gain hands-on experience with Docker, starting
 with installing and setting up Docker Desktop on your local machine. You will
 learn how to run your first container, understanding the basics of
 containerization and its benefits. This series guides you through building your

@@ -110,36 +110,34 @@ params:
     link: /enterprise/enterprise-deployment/
 ---
 
-This section contains user guides on how to install, set up, configure, and use
-Docker products.
+* Docker products
 
 ## Open source
 
-Open source development and containerization technologies.
-
-{{< grid items=open-source >}}
+* == open source development + containerization technologies
+  * look for `group: open-source`
 
 ## AI
 
-All the Docker AI tools in one easy-to-access location.
-
-{{< grid items=ai >}}
+* ALL Docker AI tools
+  * look for `group: ai`
 
 ## Products
 
-End-to-end developer solutions for innovative teams.
-
-{{< grid items=products >}}
+* E2E developer solutions
+  * look for `group: Products`
 
 ## Platform
 
-Documentation related to the Docker platform, such as administration and
-subscription management.
-
-{{< grid items=platform >}}
+* Docker platform (administration, subscription management, ...)
+  * look for `group: platform`
 
 ## Enterprise
 
-Targeted at IT administrators with help on deploying Docker Desktop at scale with configuration guidance on security related features.
-
-{{< grid items=enterprise >}}
+* audience
+  * IT administrators
+* goal
+  * deploy Docker Desktop / 
+    * scale
+    * secure
+* look for `group: enterprise`

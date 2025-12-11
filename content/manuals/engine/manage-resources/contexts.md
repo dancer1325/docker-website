@@ -7,7 +7,7 @@ aliases:
 ---
 
 * goal
-  * contexts
+  * Docker contexts
 
 ## Introduction
 
@@ -189,14 +189,11 @@ You can verify that the context was imported with `docker context ls`.
 
 The format of the import command is `docker context import <context-name> <context-file>`.
 
-## Updating a context
+## Update context´s fields -- `docker context update` --
 
-You can use `docker context update` to update fields in an existing context.
-
-The following example updates the description field in the existing `docker-test` context.
-
-```console
-$ docker context update docker-test --description "Test context"
-docker-test
-Successfully updated context "docker-test"
-```
+* _Example:_ 
+  ```console
+  $ docker context update docker-test --description "Test context"
+  docker-test
+  Successfully updated context "docker-test"
+  ```
