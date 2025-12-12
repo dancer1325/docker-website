@@ -28,50 +28,46 @@ aliases:
   - /config/daemon/
 ---
 
-This page shows you how to customize the Docker daemon, `dockerd`.
+* `dockerd`
+  * == 💡Docker daemon💡 
 
-> [!NOTE]
->
-> This page is for users who've installed Docker Engine manually. If you're
-> using Docker Desktop, refer to the [settings page](/manuals/desktop/settings-and-maintenance/settings.md#docker-engine).
+* requirements
+  * ⚠️install Docker Engine MANUALLY⚠️
+    * if you're using Docker Desktop -> [here](../../../manuals/desktop/settings-and-maintenance/settings.md#docker-engine)
 
 ## Configure the Docker daemon
 
-There are two ways to configure the Docker daemon:
+*👀ways to configure the Docker daemon (⚠️choose 1 option⚠️)👀
+  - [JSON configuration file](#---via----configuration-file)
+    - 👀recommended one👀
+      - Reason:🧠keeps ALL configurations | 1! place🧠
+  - [`dockerd` CL's flags](#configuration-using-flags)
 
-- Use a JSON configuration file. This is the preferred option, since it keeps
-  all configurations in a single place.
-- Use flags when starting `dockerd`.
+* ⚠️if you configure via BOTH ways -> Docker daemon
+  * ❌will NOT start❌
+  * prints an error message
 
-You can use both of these options together as long as you don't specify the same
-option both as a flag and in the JSON file. If that happens, the Docker daemon
-won't start and prints an error message.
+### -- via -- configuration file
 
-### Configuration file
+* == default file locationS | Docker daemon expects to find the configuration file
 
-The following table shows the location where the Docker daemon expects to find
-the configuration file by default, depending on your system and how you're
-running the daemon.
-
-| OS and configuration | File location                              |
-| -------------------- | ------------------------------------------ |
+| OS and configuration | Default File location                      |
+|----------------------|--------------------------------------------|
 | Linux, regular setup | `/etc/docker/daemon.json`                  |
 | Linux, rootless mode | `~/.config/docker/daemon.json`             |
 | Windows              | `C:\ProgramData\docker\config\daemon.json` |
 
-For rootless mode, the daemon respects the `XDG_CONFIG_HOME` variable. If set,
-the expected file location is `$XDG_CONFIG_HOME/docker/daemon.json`.
+* | rootless mode,
+  * if you set `XDG_CONFIG_HOME` variable -> expected file location: `$XDG_CONFIG_HOME/docker/daemon.json`
 
-You can also explicitly specify the location of the configuration file on
-startup, using the `dockerd --config-file` flag.
+* `--config-file` CL's flag
+  * == `dockerd --config-file`
+  * [MORE](../../../reference/cli/do#daemon-configuration-file)
 
-Learn about the available configuration options in the
-[dockerd reference docs](/reference/cli/dockerd.md#daemon-configuration-file)
+### -- via -- CL's flags
 
-### Configuration using flags
-
-You can also start the Docker daemon manually and configure it using flags.
-This can be useful for troubleshooting problems.
+* requirements
+  * start the Docker daemon MANUALLY
 
 Here's an example of how to manually start the Docker daemon, using the same
 configurations as shown in the previous JSON configuration:

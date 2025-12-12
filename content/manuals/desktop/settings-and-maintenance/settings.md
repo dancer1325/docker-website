@@ -12,21 +12,18 @@ aliases:
 weight: 10
 ---
 
-To navigate to **Settings** either:
+* "settings-store.json" (OR "settings.json" | Docker Desktop v4.34-) 
+  * == 👀Docker Desktop's settings👀
+  * location file
+    - Mac: `~/Library/Group\ Containers/group.com.docker/settings-store.json`
+    - Windows: `C:\Users\[USERNAME]\AppData\Roaming\Docker\settings-store.json`
+    - Linux: `~/.docker/desktop/settings-store.json`
 
-- Select the Docker menu {{< inline-image src="../images/whale-x.svg" alt="whale menu" >}} and then **Settings**
-- Select the **Settings** icon from the Docker Desktop Dashboard.
-
-You can also locate the `settings-store.json` file (or `settings.json` for Docker Desktop versions 4.34 and earlier) at:
- - Mac: `~/Library/Group\ Containers/group.com.docker/settings-store.json`
- - Windows: `C:\Users\[USERNAME]\AppData\Roaming\Docker\settings-store.json`
- - Linux: `~/.docker/desktop/settings-store.json`
-
-For additional information on settings that can be set in the Docker Desktop Dashboard and by administrators via the Admin Console, see the [Settings reference](/manuals/enterprise/security/hardened-desktop/settings-management/settings-reference.md).
+* [MORE](../../../manuals/enterprise/security/hardened-desktop/settings-management/settings-reference.md) 
 
 ## General
 
-On the **General** tab, you can configure when to start Docker and specify other settings:
+* TODO: On the **General** tab, you can configure when to start Docker and specify other settings:
 
 - **Start Docker Desktop when you sign in to your computer**. Select to automatically start Docker
   Desktop when you sign in to your machine.

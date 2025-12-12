@@ -15,7 +15,8 @@ weight: 10
 
 ### Can I use Docker Desktop offline?
 
-Yes, you can use Docker Desktop offline. However, you
+Yes, you can use Docker Desktop offline
+However, you
 cannot access features that require an active internet
 connection. Additionally, any functionality that requires you to sign in won't work while using Docker Desktop offline or in air-gapped environments.
 This includes:
@@ -33,26 +34,23 @@ This includes:
 - Sending usage statistics
 - When `networkMode` is set to `mirrored`
 
-### How do I connect to the remote Docker Engine API?
+### How do I connect -- to the -- remote Docker Engine API?
 
-To connect to the remote Engine API, you might need to provide the location of the Engine API for Docker clients and development tools.
-
-Mac and Windows WSL 2 users can connect to the Docker Engine through a Unix socket: `unix:///var/run/docker.sock`.
-
-If you are working with applications like [Apache Maven](https://maven.apache.org/)
-that expect settings for `DOCKER_HOST` and `DOCKER_CERT_PATH` environment
-variables, specify these to connect to Docker instances through Unix sockets.
-
-For example:
-
-```console
-$ export DOCKER_HOST=unix:///var/run/docker.sock
-```
-
-Docker Desktop Windows users can connect to the Docker Engine through a **named pipe**: `npipe:////./pipe/docker_engine`, or **TCP socket** at this URL:
-`tcp://localhost:2375`.
-
-For details, see [Docker Engine API](/reference/api/engine/_index.md).
+* provide 
+  * location of the [Engine API](../../../../reference/api/engine/_index.md)
+    * -- for --
+      * Docker clients
+      * development tools
+    * ways
+      * | Mac and Windows WSL 2,
+        * -- through a -- Unix socket: `unix:///var/run/docker.sock`
+      * | [Apache Maven](https://maven.apache.org/)
+        * -- through -- `DOCKER_HOST` & `DOCKER_CERT_PATH` environment variables
+          * `export DOCKER_HOST=unix:///var/run/docker.sock` 
+      * | Docker Desktop Windows,
+        * -- through --
+          * **named pipe:** `npipe:////./pipe/docker_engine` OR
+          * **TCP socket:** `tcp://localhost:2375`
 
 ### How do I connect from a container to a service on the host?
 
